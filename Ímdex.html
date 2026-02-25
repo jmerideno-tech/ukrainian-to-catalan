@@ -1,0 +1,3622 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aprèn Català · Nouvinguts</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --groc: #FFCE1A;
+  --groc-d: #E6B800;
+  --vermell: #FF4D6D;
+  --blau: #3B82F6;
+  --blau-d: #1D4ED8;
+  --verd: #10B981;
+  --verd-d: #047857;
+  --lila: #8B5CF6;
+  --lila-d: #6D28D9;
+  --taronja: #F97316;
+  --taronja-d: #C2410C;
+  --fons: #F7F3EE;
+  --fosc: #1A1825;
+  --fosc2: #2D2A4A;
+  --gris: #6B7280;
+  --gris-cl: #E5E7EB;
+  --blanc: #FFFFFF;
+  --card-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  --radius: 20px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--fons);
+  color: var(--fosc);
+  min-height: 100vh;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+
+/* ── HEADER ── */
+#app-header {
+  display: none;
+  position: sticky; top: 0; z-index: 200;
+  background: var(--fosc);
+  padding: 0 20px;
+  height: 58px;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.25);
+}
+.logo { font-family:'Fredoka One',cursive; font-size:1.45rem; color:var(--groc); letter-spacing:.5px; }
+.logo em { color:var(--blanc); font-style:normal; }
+.header-right { display:flex; align-items:center; gap:12px; }
+.student-pill {
+  display:flex; align-items:center; gap:8px;
+  background:rgba(255,255,255,.1);
+  border-radius:50px;
+  padding:6px 14px;
+  font-size:.82rem; font-weight:800; color:var(--blanc);
+  cursor:pointer; transition:background .2s;
+}
+.student-pill:hover { background:rgba(255,255,255,.18); }
+.student-dot { width:8px;height:8px;background:var(--verd);border-radius:50%; }
+.btn-logout {
+  background:none; border:2px solid rgba(255,255,255,.25); border-radius:50px;
+  color:rgba(255,255,255,.6); font-size:.78rem; font-weight:700; font-family:'Nunito',sans-serif;
+  padding:5px 12px; cursor:pointer; transition:all .2s;
+}
+.btn-logout:hover { border-color:var(--vermell); color:var(--vermell); }
+
+/* ── SCREENS ── */
+.screen { display:none; }
+.screen.active { display:block; }
+
+/* ══════════════════════════════
+   LOGIN SCREEN
+══════════════════════════════ */
+#screen-login {
+  min-height:100vh;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:32px 16px;
+  background: radial-gradient(ellipse at 30% 20%, #3B2F7A 0%, #1A1825 60%);
+  overflow:hidden; position:relative;
+}
+#screen-login.active { display:flex; }
+#screen-login::before {
+  content:'';
+  position:absolute; inset:0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.login-hero { text-align:center; margin-bottom:36px; z-index:1; }
+.login-mascot { font-size:5rem; display:block; animation:float 3s ease-in-out infinite; margin-bottom:12px; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+.login-hero h1 {
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(2rem,6vw,3.2rem);
+  color:var(--groc); line-height:1.05; margin-bottom:10px;
+}
+.login-hero p { color:rgba(255,255,255,.6); font-size:1rem; max-width:380px; margin:0 auto; }
+
+.login-card {
+  background:var(--blanc);
+  border-radius:28px;
+  padding:36px 32px;
+  max-width:440px; width:100%;
+  box-shadow:0 24px 64px rgba(0,0,0,.35);
+  z-index:1;
+}
+.login-card h2 {
+  font-family:'Fredoka One',cursive; font-size:1.35rem;
+  text-align:center; margin-bottom:24px; color:var(--fosc);
+}
+.input-group { margin-bottom:18px; }
+.input-group label { display:block; font-weight:800; font-size:.82rem; text-transform:uppercase; letter-spacing:.5px; color:var(--gris); margin-bottom:7px; }
+.code-input {
+  width:100%;
+  border:3px solid var(--gris-cl);
+  border-radius:14px;
+  padding:14px 18px;
+  font-family:'Nunito',sans-serif;
+  font-size:1.3rem; font-weight:900; letter-spacing:4px;
+  text-transform:uppercase; text-align:center;
+  outline:none; transition:border-color .2s, box-shadow .2s;
+  color:var(--fosc);
+}
+.code-input:focus { border-color:var(--blau); box-shadow:0 0 0 4px rgba(59,130,246,.15); }
+.code-input.error { border-color:var(--vermell); box-shadow:0 0 0 4px rgba(255,77,109,.15); animation:shake .35s; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-8px)} 40%,80%{transform:translateX(8px)} }
+.code-hint { font-size:.8rem; color:var(--gris); text-align:center; margin-top:8px; }
+.code-hint strong { color:var(--fosc); }
+.error-msg { color:var(--vermell); font-size:.85rem; font-weight:700; text-align:center; margin-top:8px; min-height:20px; }
+
+.btn-entrar {
+  width:100%; margin-top:8px;
+  background:var(--groc); color:var(--fosc);
+  border:none; border-radius:16px;
+  padding:16px; font-family:'Fredoka One',cursive;
+  font-size:1.25rem; cursor:pointer;
+  box-shadow:0 5px 0 var(--groc-d);
+  transition:transform .12s, box-shadow .12s;
+}
+.btn-entrar:hover { transform:translateY(-2px); box-shadow:0 7px 0 var(--groc-d); }
+.btn-entrar:active { transform:translateY(3px); box-shadow:0 2px 0 var(--groc-d); }
+.btn-entrar:disabled { opacity:.45; cursor:not-allowed; transform:none; box-shadow:0 5px 0 var(--groc-d); }
+
+.demo-codes {
+  margin-top:20px; background:var(--fons);
+  border-radius:14px; padding:14px 16px;
+  font-size:.83rem;
+}
+.demo-codes strong { display:block; margin-bottom:8px; font-size:.78rem; text-transform:uppercase; letter-spacing:.5px; color:var(--gris); }
+.demo-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.demo-code {
+  background:var(--blanc); border:2px solid var(--gris-cl);
+  border-radius:10px; padding:7px 10px;
+  cursor:pointer; transition:all .15s;
+  text-align:center;
+}
+.demo-code:hover { border-color:var(--blau); background:#EFF6FF; }
+.demo-code .dc-code { font-weight:900; font-size:.9rem; letter-spacing:2px; display:block; }
+.demo-code .dc-info { font-size:.72rem; color:var(--gris); }
+
+/* ══════════════════════════════
+   DASHBOARD
+══════════════════════════════ */
+#screen-dashboard { padding:24px 20px 40px; max-width:920px; margin:0 auto; }
+
+.dash-hero {
+  background:var(--fosc2);
+  border-radius:var(--radius);
+  padding:24px 28px;
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:28px; gap:16px; flex-wrap:wrap;
+  background-image: linear-gradient(135deg, #2D2A4A 0%, #1A1825 100%);
+}
+.dash-hero-left h2 { font-family:'Fredoka One',cursive; color:var(--blanc); font-size:1.45rem; margin-bottom:4px; }
+.dash-hero-left p { color:rgba(255,255,255,.55); font-size:.88rem; }
+.dash-stats { display:flex; gap:12px; flex-wrap:wrap; }
+.stat-chip {
+  background:rgba(255,255,255,.08);
+  border-radius:12px; padding:10px 16px;
+  text-align:center;
+}
+.stat-chip .sv { font-family:'Fredoka One',cursive; font-size:1.5rem; color:var(--groc); display:block; }
+.stat-chip .sl { font-size:.72rem; color:rgba(255,255,255,.5); font-weight:700; text-transform:uppercase; }
+
+.section-label {
+  font-family:'Fredoka One',cursive; font-size:1.1rem;
+  color:var(--fosc); margin-bottom:14px;
+  display:flex; align-items:center; gap:8px;
+}
+.section-label::after { content:''; flex:1; height:2px; background:linear-gradient(90deg,rgba(0,0,0,.07) 0%,transparent 100%); border-radius:2px; }
+
+.dims-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:16px; margin-bottom:32px; }
+
+.dim-card {
+  background:var(--blanc);
+  border-radius:var(--radius);
+  padding:24px 20px 20px;
+  cursor:pointer;
+  transition:transform .18s, box-shadow .18s;
+  box-shadow:var(--card-shadow);
+  position:relative; overflow:hidden;
+}
+.dim-card::after {
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:5px;
+  border-radius:var(--radius) var(--radius) 0 0;
+}
+.dim-card[data-dim="oral-c"]::after { background:var(--blau); }
+.dim-card[data-dim="oral-e"]::after { background:var(--taronja); }
+.dim-card[data-dim="lectora"]::after { background:var(--verd); }
+.dim-card[data-dim="escrita"]::after { background:var(--lila); }
+.dim-card:hover { transform:translateY(-5px); box-shadow:0 12px 32px rgba(0,0,0,.14); }
+.dim-icon-big { font-size:2.4rem; margin-bottom:10px; display:block; }
+.dim-card h3 { font-size:1rem; font-weight:900; margin-bottom:4px; }
+.dim-card p { font-size:.8rem; color:var(--gris); line-height:1.4; }
+.dim-prog-wrap { margin-top:14px; }
+.dim-prog-track { background:#f0f0f0; border-radius:50px; height:9px; overflow:hidden; }
+.dim-prog-fill { height:100%; border-radius:50px; transition:width .7s ease; }
+.dim-card[data-dim="oral-c"] .dim-prog-fill { background:var(--blau); }
+.dim-card[data-dim="oral-e"] .dim-prog-fill { background:var(--taronja); }
+.dim-card[data-dim="lectora"] .dim-prog-fill { background:var(--verd); }
+.dim-card[data-dim="escrita"] .dim-prog-fill { background:var(--lila); }
+.dim-prog-label { font-size:.72rem; font-weight:700; color:var(--gris); margin-top:5px; }
+
+/* ══════════════════════════════
+   ACTIVITY LIST
+══════════════════════════════ */
+#screen-activities { padding:20px 20px 40px; max-width:860px; margin:0 auto; }
+
+.back-btn {
+  background:none; border:none;
+  font-family:'Nunito',sans-serif; font-size:.95rem; font-weight:800;
+  color:var(--gris); cursor:pointer; display:flex; align-items:center; gap:6px;
+  margin-bottom:18px; padding:0; transition:color .2s;
+}
+.back-btn:hover { color:var(--fosc); }
+
+.acts-header {
+  display:flex; align-items:center; gap:16px;
+  background:var(--blanc); border-radius:var(--radius);
+  padding:20px 24px; margin-bottom:24px; box-shadow:var(--card-shadow);
+}
+.dim-icon-med {
+  width:54px; height:54px; border-radius:16px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.8rem; flex-shrink:0;
+}
+.acts-header h2 { font-family:'Fredoka One',cursive; font-size:1.45rem; margin-bottom:3px; }
+.acts-header p { font-size:.82rem; color:var(--gris); }
+
+.act-list { display:flex; flex-direction:column; gap:11px; }
+.act-item {
+  background:var(--blanc);
+  border-radius:16px;
+  padding:17px 20px;
+  display:flex; align-items:center; gap:14px;
+  cursor:pointer; transition:transform .15s, box-shadow .15s;
+  box-shadow:var(--card-shadow);
+  border-left:6px solid transparent;
+}
+.act-item:hover { transform:translateX(5px); box-shadow:0 6px 26px rgba(0,0,0,.12); }
+.act-item.done { opacity:.7; }
+.act-num {
+  width:40px; height:40px; border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-weight:900; font-size:1rem; flex-shrink:0;
+}
+.act-body { flex:1; min-width:0; }
+.act-body h4 { font-weight:900; font-size:.98rem; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.act-body p { font-size:.78rem; color:var(--gris); }
+.act-right { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.type-tag { font-size:.7rem; font-weight:800; padding:3px 10px; border-radius:50px; background:#f0f0f0; color:var(--gris); }
+.done-score { font-size:.82rem; font-weight:900; }
+
+/* ══════════════════════════════
+   EXERCISE
+══════════════════════════════ */
+#screen-exercise { padding:20px 20px 40px; max-width:720px; margin:0 auto; }
+
+.ex-topbar { display:flex; align-items:center; gap:12px; margin-bottom:22px; }
+.ex-prog-track { flex:1; background:var(--gris-cl); border-radius:50px; height:11px; overflow:hidden; }
+.ex-prog-fill { height:100%; border-radius:50px; transition:width .4s ease; }
+.ex-step { font-size:.82rem; font-weight:900; color:var(--gris); white-space:nowrap; }
+
+.ex-card {
+  background:var(--blanc);
+  border-radius:24px;
+  padding:30px 28px;
+  box-shadow:var(--card-shadow);
+  margin-bottom:16px;
+  min-height:340px;
+  display:flex; flex-direction:column;
+}
+
+.q-type-badge {
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.5px;
+  padding:4px 12px; border-radius:50px;
+  background:#F3F4F6; color:var(--gris);
+  margin-bottom:16px; width:fit-content;
+}
+
+.q-text {
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(1.15rem,3vw,1.55rem);
+  color:var(--fosc); line-height:1.3;
+  margin-bottom:22px;
+}
+
+/* Audio player */
+.audio-player {
+  display:flex; align-items:center; gap:14px;
+  background:var(--fosc2);
+  border-radius:16px; padding:16px 20px;
+  margin-bottom:20px; cursor:pointer;
+  transition:transform .15s, box-shadow .15s;
+  box-shadow:0 4px 14px rgba(0,0,0,.18);
+}
+.audio-player:hover { transform:scale(1.01); box-shadow:0 6px 20px rgba(0,0,0,.22); }
+.play-btn-wrap {
+  width:46px; height:46px; background:var(--groc);
+  border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:1.2rem; flex-shrink:0; transition:transform .15s;
+}
+.audio-player:hover .play-btn-wrap { transform:scale(1.1); }
+.audio-txt { flex:1; }
+.audio-txt strong { color:var(--blanc); font-size:.88rem; display:block; margin-bottom:2px; }
+.audio-txt span { color:rgba(255,255,255,.5); font-size:.75rem; }
+.wave { display:flex; align-items:center; gap:3px; height:28px; }
+.wbar { background:rgba(255,206,26,.35); border-radius:3px; width:4px; transition:height .1s; }
+.wbar.active { background:var(--groc); }
+
+/* Test options */
+.test-opts { display:flex; flex-direction:column; gap:9px; flex:1; }
+.test-opt {
+  background:var(--fons);
+  border:3px solid transparent; border-radius:14px;
+  padding:13px 17px;
+  font-family:'Nunito',sans-serif; font-size:.97rem; font-weight:700;
+  color:var(--fosc); cursor:pointer; text-align:left;
+  display:flex; align-items:center; gap:12px;
+  transition:border-color .15s, background .15s;
+}
+.test-opt:hover:not(:disabled) { border-color:var(--blau); background:#EFF6FF; }
+.test-opt.chosen { border-color:var(--blau); background:#DBEAFE; }
+.test-opt.correct { border-color:var(--verd); background:#D1FAE5; color:#065F46; }
+.test-opt.wrong { border-color:var(--vermell); background:#FFE4E9; color:#9B1C2D; }
+.test-opt.show-correct { border-color:var(--verd); background:#D1FAE5; }
+.opt-letter {
+  width:28px; height:28px; border-radius:8px;
+  background:rgba(0,0,0,.07);
+  display:flex; align-items:center; justify-content:center;
+  font-size:.82rem; flex-shrink:0; font-weight:900;
+}
+
+/* Match */
+.match-wrap { display:grid; grid-template-columns:1fr 1fr; gap:12px; flex:1; }
+.match-col { display:flex; flex-direction:column; gap:8px; }
+.match-col-hd { font-size:.72rem; font-weight:800; text-transform:uppercase; color:var(--gris); margin-bottom:3px; letter-spacing:.4px; }
+.match-item {
+  background:var(--fons);
+  border:3px solid transparent; border-radius:12px;
+  padding:12px 13px; font-weight:700; font-size:.9rem;
+  cursor:pointer; text-align:center;
+  transition:all .15s;
+}
+.match-item:hover:not(.matched) { border-color:var(--blau); background:#EFF6FF; }
+.match-item.sel-left { border-color:var(--taronja); background:#FFF7ED; }
+.match-item.matched { border-color:var(--verd); background:#D1FAE5; color:#065F46; cursor:default; }
+.match-item.bad { border-color:var(--vermell); background:#FFE4E9; animation:shake .3s; }
+
+/* Order */
+.order-wrap { flex:1; display:flex; flex-direction:column; gap:12px; }
+.order-lbl { font-size:.75rem; font-weight:800; color:var(--gris); text-transform:uppercase; letter-spacing:.4px; }
+.order-drop {
+  min-height:56px; border:3px dashed #D1D5DB;
+  border-radius:14px; padding:10px 12px;
+  display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+  background:#FAFAFA; transition:border-color .2s;
+}
+.order-drop.populated { border-color:var(--blau); }
+.word-chip {
+  background:var(--fosc); color:var(--blanc);
+  border-radius:10px; padding:8px 14px;
+  font-family:'Nunito',sans-serif; font-weight:800; font-size:.9rem;
+  cursor:pointer; border:none; transition:transform .12s, background .12s;
+}
+.word-chip:hover { transform:scale(1.06); }
+.word-chip.in-drop { background:var(--blau); }
+.word-chip.ok-chip { background:var(--verd); }
+.word-chip.ko-chip { background:var(--vermell); }
+.word-bank-wrap {
+  display:flex; flex-wrap:wrap; gap:8px;
+  background:var(--fons); border-radius:14px; padding:12px;
+  min-height:50px;
+}
+.correct-sentence-hint { font-size:.78rem; color:#065F46; font-weight:700; margin-top:6px; }
+
+/* Fill */
+.fill-wrap { flex:1; display:flex; flex-direction:column; gap:16px; }
+.fill-txt { font-size:1.1rem; font-weight:700; line-height:2.2; }
+.fill-inp {
+  display:inline-block;
+  border:none; border-bottom:3px solid var(--blau);
+  padding:2px 8px; width:90px; text-align:center;
+  font-family:'Nunito',sans-serif; font-size:1rem; font-weight:800; color:var(--blau);
+  outline:none; background:transparent;
+  vertical-align:middle;
+  transition:border-color .2s;
+}
+.fill-inp:focus { border-color:var(--fosc); color:var(--fosc); }
+.fill-inp.ok-inp { border-color:var(--verd); color:#065F46; }
+.fill-inp.ko-inp { border-color:var(--vermell); color:#9B1C2D; }
+
+/* Feedback */
+.feedback {
+  border-radius:16px; padding:15px 18px;
+  display:none; align-items:center; gap:12px;
+  font-weight:700; font-size:.97rem; margin-bottom:14px;
+  animation:slideUp .25s ease;
+}
+@keyframes slideUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.feedback.show { display:flex; }
+.feedback.ok { background:#D1FAE5; color:#065F46; }
+.feedback.ko { background:#FFE4E9; color:#9B1C2D; }
+.fb-icon { font-size:1.4rem; flex-shrink:0; }
+.fb-body strong { display:block; margin-bottom:2px; }
+.fb-body span { font-weight:600; font-size:.88rem; opacity:.85; }
+
+.btn-check {
+  width:100%; background:var(--blau); color:var(--blanc);
+  border:none; border-radius:16px; padding:16px;
+  font-family:'Fredoka One',cursive; font-size:1.2rem;
+  cursor:pointer; box-shadow:0 5px 0 var(--blau-d);
+  transition:transform .12s, box-shadow .12s;
+}
+.btn-check:hover:not(:disabled) { transform:translateY(-2px); box-shadow:0 7px 0 var(--blau-d); }
+.btn-check:active:not(:disabled) { transform:translateY(3px); box-shadow:0 2px 0 var(--blau-d); }
+.btn-check:disabled { opacity:.4; cursor:not-allowed; transform:none; box-shadow:0 5px 0 var(--blau-d); }
+.btn-next {
+  width:100%; background:var(--verd); color:var(--blanc);
+  border:none; border-radius:16px; padding:16px;
+  font-family:'Fredoka One',cursive; font-size:1.2rem;
+  cursor:pointer; box-shadow:0 5px 0 var(--verd-d);
+  display:none; transition:transform .12s, box-shadow .12s;
+}
+.btn-next:hover { transform:translateY(-2px); box-shadow:0 7px 0 var(--verd-d); }
+.btn-next.show { display:block; }
+
+/* ══════════════════════════════
+   RESULTS
+══════════════════════════════ */
+#screen-results { padding:40px 20px; max-width:580px; margin:0 auto; text-align:center; }
+.res-emoji { font-size:5rem; display:block; margin-bottom:8px; }
+.stars { font-size:2.2rem; letter-spacing:6px; margin:12px 0; display:block; }
+.star { display:inline-block; animation:starPop .35s ease forwards; opacity:0; transform:scale(.3); }
+.star:nth-child(1){animation-delay:.2s}
+.star:nth-child(2){animation-delay:.4s}
+.star:nth-child(3){animation-delay:.6s}
+@keyframes starPop { to{opacity:1;transform:scale(1) rotate(8deg)} }
+.res-title { font-family:'Fredoka One',cursive; font-size:2rem; margin-bottom:6px; }
+.res-score-big {
+  font-family:'Fredoka One',cursive; font-size:4rem;
+  color:var(--verd); margin:18px 0 4px;
+}
+.res-score-big span { font-size:1.6rem; color:var(--gris); }
+.res-msg { font-size:1rem; color:var(--gris); margin-bottom:28px; line-height:1.5; }
+.res-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+.btn-sec {
+  background:var(--fons); color:var(--fosc);
+  border:3px solid var(--gris-cl); border-radius:14px;
+  padding:13px 26px; font-family:'Fredoka One',cursive; font-size:1.05rem;
+  cursor:pointer; transition:border-color .2s;
+}
+.btn-sec:hover { border-color:var(--fosc); }
+.btn-pri {
+  background:var(--groc); color:var(--fosc);
+  border:none; border-radius:14px;
+  padding:13px 26px; font-family:'Fredoka One',cursive; font-size:1.05rem;
+  cursor:pointer; box-shadow:0 4px 0 var(--groc-d); transition:transform .12s;
+}
+.btn-pri:hover { transform:translateY(-2px); }
+
+/* Responsive */
+@media(max-width:520px) {
+  .login-card { padding:24px 18px; }
+  .match-wrap { grid-template-columns:1fr; }
+  .match-col { flex-direction:row; flex-wrap:wrap; }
+  .ex-card { padding:22px 16px; }
+  .dash-hero { flex-direction:column; align-items:flex-start; }
+}
+
+/* ══════════════════════════════
+   ADMIN STYLES
+══════════════════════════════ */
+#screen-admin { padding:0; }
+#screen-admin.active { display:block; }
+
+/* Admin login overlay */
+.admin-login-overlay {
+  min-height:100vh;
+  display:flex; align-items:center; justify-content:center;
+  padding:32px 16px;
+  background: radial-gradient(ellipse at 70% 30%, #1A3A2A 0%, #0D1F1A 100%);
+  position:relative; overflow:hidden;
+}
+.admin-login-overlay::before {
+  content:'';
+  position:absolute; inset:0;
+  background:repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(16,185,129,.03) 40px, rgba(16,185,129,.03) 80px);
+}
+.admin-login-card {
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(16,185,129,.2);
+  border-radius:28px;
+  padding:40px 36px;
+  max-width:420px; width:100%;
+  z-index:1;
+  box-shadow:0 24px 64px rgba(0,0,0,.5);
+  backdrop-filter:blur(12px);
+}
+.admin-login-badge {
+  display:flex; align-items:center; gap:12px;
+  margin-bottom:28px;
+}
+.admin-shield {
+  width:52px; height:52px;
+  background:linear-gradient(135deg,#10B981,#047857);
+  border-radius:16px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.5rem;
+  box-shadow:0 4px 16px rgba(16,185,129,.4);
+}
+.admin-login-badge h2 {
+  font-family:'Fredoka One',cursive; font-size:1.4rem; color:#fff;
+}
+.admin-login-badge p { color:rgba(255,255,255,.45); font-size:.82rem; }
+
+.admin-field label {
+  display:block; font-size:.75rem; font-weight:800; text-transform:uppercase;
+  letter-spacing:.6px; color:rgba(255,255,255,.4); margin-bottom:8px;
+}
+.admin-input {
+  width:100%;
+  background:rgba(255,255,255,.07);
+  border:2px solid rgba(255,255,255,.12);
+  border-radius:12px;
+  padding:13px 16px;
+  font-family:'Nunito',sans-serif; font-size:1rem; font-weight:700;
+  color:#fff; outline:none;
+  transition:border-color .2s, box-shadow .2s;
+  margin-bottom:16px;
+  letter-spacing:2px;
+}
+.admin-input:focus { border-color:var(--verd); box-shadow:0 0 0 3px rgba(16,185,129,.2); }
+.admin-input.err { border-color:var(--vermell); animation:shake .35s; }
+.admin-err { color:#ff6b6b; font-size:.82rem; font-weight:700; min-height:20px; text-align:center; margin-bottom:12px; }
+.btn-admin-login {
+  width:100%;
+  background:linear-gradient(135deg,#10B981,#047857);
+  color:#fff; border:none; border-radius:14px;
+  padding:15px; font-family:'Fredoka One',cursive; font-size:1.2rem;
+  cursor:pointer; box-shadow:0 4px 16px rgba(16,185,129,.4);
+  transition:transform .12s, box-shadow .12s;
+}
+.btn-admin-login:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(16,185,129,.5); }
+.admin-back-link {
+  display:block; text-align:center; margin-top:18px;
+  color:rgba(255,255,255,.35); font-size:.82rem; font-weight:700;
+  cursor:pointer; transition:color .2s;
+  background:none; border:none; font-family:'Nunito',sans-serif; width:100%;
+}
+.admin-back-link:hover { color:rgba(255,255,255,.7); }
+
+/* Admin panel */
+.admin-panel { min-height:100vh; background:#F0FDF4; }
+.admin-topbar {
+  background:#065F46;
+  padding:0 24px; height:60px;
+  display:flex; align-items:center; justify-content:space-between;
+  box-shadow:0 2px 12px rgba(0,0,0,.2);
+  position:sticky; top:0; z-index:100;
+}
+.admin-topbar-left { display:flex; align-items:center; gap:12px; }
+.admin-topbar-left .shield-sm { font-size:1.2rem; }
+.admin-topbar-left h1 { font-family:'Fredoka One',cursive; color:#fff; font-size:1.25rem; }
+.admin-topbar-left span { color:rgba(255,255,255,.5); font-size:.78rem; font-weight:700; }
+.btn-admin-out {
+  background:rgba(255,255,255,.1); border:2px solid rgba(255,255,255,.2);
+  border-radius:50px; color:rgba(255,255,255,.65);
+  font-size:.78rem; font-weight:700; font-family:'Nunito',sans-serif;
+  padding:5px 14px; cursor:pointer; transition:all .2s;
+}
+.btn-admin-out:hover { border-color:#ff6b6b; color:#ff6b6b; }
+
+.admin-content { max-width:960px; margin:0 auto; padding:28px 20px 48px; }
+
+/* Admin summary cards */
+.admin-summary { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px; margin-bottom:32px; }
+.sum-card {
+  background:#fff; border-radius:18px; padding:18px 20px;
+  box-shadow:0 2px 16px rgba(0,0,0,.07);
+}
+.sum-card .sv { font-family:'Fredoka One',cursive; font-size:2rem; color:#065F46; display:block; }
+.sum-card .sl { font-size:.75rem; font-weight:800; color:var(--gris); text-transform:uppercase; letter-spacing:.4px; }
+
+/* 4 big dimension buttons */
+.admin-dims-title {
+  font-family:'Fredoka One',cursive; font-size:1.15rem; color:#065F46;
+  margin-bottom:16px; display:flex; align-items:center; gap:8px;
+}
+.admin-dims-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:18px;
+  margin-bottom:36px;
+}
+.admin-dim-btn {
+  background:#fff;
+  border:none; border-radius:22px;
+  padding:28px 20px 22px;
+  cursor:pointer; text-align:center;
+  box-shadow:0 4px 20px rgba(0,0,0,.09);
+  transition:transform .18s, box-shadow .18s;
+  position:relative; overflow:hidden;
+  font-family:'Nunito',sans-serif;
+}
+.admin-dim-btn::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:6px;
+  border-radius:22px 22px 0 0;
+}
+.admin-dim-btn[data-dim="oral-c"]::before { background:var(--blau); }
+.admin-dim-btn[data-dim="oral-e"]::before { background:var(--taronja); }
+.admin-dim-btn[data-dim="lectora"]::before { background:var(--verd); }
+.admin-dim-btn[data-dim="escrita"]::before { background:var(--lila); }
+.admin-dim-btn:hover { transform:translateY(-6px); box-shadow:0 12px 32px rgba(0,0,0,.14); }
+.adb-icon { font-size:2.8rem; display:block; margin-bottom:12px; }
+.adb-title { font-family:'Fredoka One',cursive; font-size:1.15rem; color:var(--fosc); display:block; margin-bottom:6px; }
+.adb-sub { font-size:.78rem; color:var(--gris); display:block; margin-bottom:16px; line-height:1.4; }
+.adb-stats { display:flex; justify-content:center; gap:10px; }
+.adb-stat {
+  border-radius:10px; padding:6px 12px; font-size:.75rem; font-weight:800;
+}
+.admin-dim-btn[data-dim="oral-c"] .adb-stat { background:#EFF6FF; color:var(--blau); }
+.admin-dim-btn[data-dim="oral-e"] .adb-stat { background:#FFF7ED; color:var(--taronja); }
+.admin-dim-btn[data-dim="lectora"] .adb-stat { background:#F0FDF4; color:var(--verd-d); }
+.admin-dim-btn[data-dim="escrita"] .adb-stat { background:#F5F3FF; color:var(--lila); }
+
+/* Admin dimension detail panel */
+.admin-dim-detail { display:none; }
+.admin-dim-detail.open { display:block; }
+.admin-dim-header {
+  display:flex; align-items:center; gap:14px;
+  background:#fff; border-radius:18px; padding:18px 22px;
+  margin-bottom:20px; box-shadow:0 2px 12px rgba(0,0,0,.07);
+}
+.admin-dim-header .dim-ic { font-size:2rem; width:50px; height:50px; border-radius:14px; display:flex; align-items:center; justify-content:center; }
+.admin-dim-header h3 { font-family:'Fredoka One',cursive; font-size:1.3rem; }
+.admin-dim-header p { font-size:.8rem; color:var(--gris); }
+.btn-back-dims {
+  background:none; border:none; font-family:'Nunito',sans-serif;
+  font-size:.88rem; font-weight:800; color:var(--gris);
+  cursor:pointer; display:flex; align-items:center; gap:5px;
+  margin-bottom:14px; padding:0; transition:color .2s;
+}
+.btn-back-dims:hover { color:#065F46; }
+
+/* Students table per dimension */
+.admin-table-wrap {
+  background:#fff; border-radius:18px;
+  overflow:hidden; box-shadow:0 2px 14px rgba(0,0,0,.07);
+}
+.admin-table { width:100%; border-collapse:collapse; font-size:.85rem; }
+.admin-table thead tr { background:#F8FFFE; }
+.admin-table th {
+  padding:13px 16px; text-align:left;
+  font-size:.72rem; font-weight:900; text-transform:uppercase;
+  letter-spacing:.5px; color:var(--gris);
+  border-bottom:2px solid #F0FDF4;
+}
+.admin-table td {
+  padding:12px 16px; border-bottom:1px solid #F9FAFB;
+  vertical-align:middle;
+}
+.admin-table tr:last-child td { border-bottom:none; }
+.admin-table tr:hover td { background:#FAFFF9; }
+.student-name-cell { font-weight:900; font-size:.9rem; }
+.grade-chip {
+  display:inline-block; font-size:.7rem; font-weight:800;
+  padding:2px 9px; border-radius:50px;
+  background:#F0FDF4; color:#065F46; margin-left:6px;
+}
+.level-chip {
+  display:inline-block; font-size:.7rem; font-weight:800;
+  padding:2px 9px; border-radius:50px;
+  background:#EFF6FF; color:var(--blau);
+}
+.act-progress-cell { min-width:180px; }
+.mini-prog-track { background:#F0F0F0; border-radius:50px; height:7px; overflow:hidden; display:inline-block; width:80px; vertical-align:middle; margin-right:8px; }
+.mini-prog-fill { height:100%; border-radius:50px; }
+.act-score-list { display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; }
+.act-score-pill {
+  font-size:.68rem; font-weight:800; padding:2px 8px; border-radius:50px;
+  border:2px solid transparent;
+}
+.act-score-pill.done-pill { background:#D1FAE5; color:#065F46; border-color:#A7F3D0; }
+.act-score-pill.todo-pill { background:#F3F4F6; color:#9CA3AF; }
+.no-data-row td { text-align:center; color:var(--gris); padding:24px; font-size:.85rem; }
+
+/* ══════════════════════════════
+   STUDENT MANAGEMENT
+══════════════════════════════ */
+.admin-section-title {
+  font-family:'Fredoka One',cursive; font-size:1.2rem; color:var(--fosc);
+  margin:32px 0 16px; display:flex; align-items:center; gap:10px;
+}
+.admin-section-title::after { content:''; flex:1; height:2px; background:linear-gradient(90deg,rgba(0,0,0,.07),transparent); border-radius:2px; }
+
+.students-toolbar {
+  display:flex; align-items:center; justify-content:space-between;
+  flex-wrap:wrap; gap:10px; margin-bottom:16px;
+}
+.btn-add-student {
+  background:var(--verd); color:#fff; border:none; border-radius:12px;
+  padding:10px 20px; font-family:'Nunito',sans-serif; font-weight:800; font-size:.9rem;
+  cursor:pointer; display:flex; align-items:center; gap:8px; transition:all .2s;
+}
+.btn-add-student:hover { background:var(--verd-d); transform:translateY(-1px); }
+
+.students-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:12px;
+  margin-bottom:24px;
+}
+.student-card {
+  background:#fff; border:2px solid var(--gris-cl); border-radius:16px;
+  padding:16px 18px; position:relative; transition:box-shadow .2s;
+}
+.student-card:hover { box-shadow:0 4px 20px rgba(0,0,0,.1); }
+.student-card-header {
+  display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;
+}
+.student-card-code {
+  font-family:'Fredoka One',cursive; font-size:1.5rem; letter-spacing:3px;
+  color:var(--blau); background:#EFF6FF; border-radius:10px; padding:4px 12px;
+}
+.student-card-actions { display:flex; gap:6px; }
+.btn-icon {
+  background:none; border:2px solid var(--gris-cl); border-radius:8px;
+  width:32px; height:32px; cursor:pointer; font-size:.9rem; display:flex;
+  align-items:center; justify-content:center; transition:all .15s;
+}
+.btn-icon:hover { border-color:var(--vermell); background:#FFF5F5; }
+.btn-icon.edit:hover { border-color:var(--blau); background:#EFF6FF; }
+.student-card-name { font-weight:900; font-size:1rem; margin-bottom:4px; }
+.student-card-meta {
+  display:flex; flex-wrap:wrap; gap:5px; font-size:.75rem;
+}
+.meta-chip {
+  background:var(--fons); border-radius:6px; padding:2px 8px;
+  font-weight:700; color:var(--gris);
+}
+.meta-chip.curs { background:#EFF6FF; color:var(--blau); }
+.meta-chip.nivell { background:#F0FDF4; color:#065F46; }
+.student-prog-bar {
+  margin-top:10px; background:#F3F4F6; border-radius:50px; height:6px; overflow:hidden;
+}
+.student-prog-fill { height:100%; border-radius:50px; background:var(--verd); transition:width .4s; }
+.student-prog-label { font-size:.72rem; color:var(--gris); margin-top:3px; font-weight:700; }
+
+/* Modal */
+.modal-backdrop {
+  position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:1000;
+  display:flex; align-items:center; justify-content:center; padding:16px;
+  opacity:0; pointer-events:none; transition:opacity .2s;
+}
+.modal-backdrop.open { opacity:1; pointer-events:all; }
+.modal-box {
+  background:#fff; border-radius:24px; padding:32px 28px;
+  max-width:520px; width:100%; max-height:90vh; overflow-y:auto;
+  box-shadow:0 24px 64px rgba(0,0,0,.3);
+  transform:scale(.95); transition:transform .2s;
+}
+.modal-backdrop.open .modal-box { transform:scale(1); }
+.modal-title {
+  font-family:'Fredoka One',cursive; font-size:1.4rem; margin-bottom:24px;
+  color:var(--fosc); display:flex; align-items:center; gap:10px;
+}
+.form-row { margin-bottom:16px; }
+.form-row label {
+  display:block; font-weight:800; font-size:.78rem; text-transform:uppercase;
+  letter-spacing:.5px; color:var(--gris); margin-bottom:6px;
+}
+.form-input {
+  width:100%; border:2.5px solid var(--gris-cl); border-radius:12px;
+  padding:11px 14px; font-family:'Nunito',sans-serif; font-size:.95rem;
+  font-weight:700; outline:none; transition:border-color .2s;
+  color:var(--fosc); background:#fff;
+}
+.form-input:focus { border-color:var(--blau); }
+.form-input.code-field {
+  font-family:'Fredoka One',cursive; font-size:1.3rem; letter-spacing:4px;
+  text-transform:uppercase; text-align:center;
+}
+.code-row { display:flex; gap:10px; align-items:flex-end; }
+.code-row .form-input { flex:1; }
+.btn-gen-code {
+  background:var(--lila); color:#fff; border:none; border-radius:12px;
+  padding:11px 16px; font-family:'Nunito',sans-serif; font-weight:800; font-size:.85rem;
+  cursor:pointer; white-space:nowrap; transition:background .2s;
+  height:46px;
+}
+.btn-gen-code:hover { background:var(--lila-d); }
+.form-select {
+  width:100%; border:2.5px solid var(--gris-cl); border-radius:12px;
+  padding:11px 14px; font-family:'Nunito',sans-serif; font-size:.95rem;
+  font-weight:700; outline:none; color:var(--fosc); background:#fff;
+  appearance:none; cursor:pointer;
+}
+.form-select:focus { border-color:var(--blau); }
+.form-row-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.modal-actions { display:flex; gap:12px; margin-top:24px; }
+.btn-save {
+  flex:1; background:var(--verd); color:#fff; border:none; border-radius:12px;
+  padding:13px; font-family:'Fredoka One',cursive; font-size:1.1rem;
+  cursor:pointer; transition:all .2s;
+}
+.btn-save:hover { background:var(--verd-d); }
+.btn-cancel-modal {
+  background:none; border:2.5px solid var(--gris-cl); border-radius:12px;
+  padding:13px 20px; font-family:'Nunito',sans-serif; font-weight:800;
+  cursor:pointer; color:var(--gris); transition:all .2s;
+}
+.btn-cancel-modal:hover { border-color:var(--vermell); color:var(--vermell); }
+.modal-err { color:var(--vermell); font-size:.85rem; font-weight:700; min-height:20px; margin-top:8px; text-align:center; }
+.del-confirm {
+  background:#FFF5F5; border:2px solid #FECDD3; border-radius:12px;
+  padding:16px; margin-top:16px; text-align:center;
+}
+.del-confirm p { font-size:.9rem; color:#9B1C1C; margin-bottom:12px; font-weight:700; }
+.btn-del-confirm {
+  background:var(--vermell); color:#fff; border:none; border-radius:10px;
+  padding:9px 20px; font-family:'Nunito',sans-serif; font-weight:800;
+  cursor:pointer; margin-right:8px; font-size:.85rem;
+}
+.btn-del-cancel {
+  background:none; border:2px solid var(--gris-cl); border-radius:10px;
+  padding:9px 20px; font-family:'Nunito',sans-serif; font-weight:800;
+  cursor:pointer; font-size:.85rem; color:var(--gris);
+}
+.empty-students {
+  text-align:center; padding:40px 20px; color:var(--gris);
+  background:#fff; border-radius:16px; border:2px dashed var(--gris-cl);
+}
+.empty-students .es-icon { font-size:3rem; display:block; margin-bottom:12px; }
+.empty-students p { font-size:.9rem; }
+
+/* ══════════════════════════════
+   VOCABULARY MODULE
+══════════════════════════════ */
+#screen-vocab { padding:20px 20px 48px; max-width:960px; margin:0 auto; }
+#screen-vocab.active { display:block; }
+
+.vocab-header {
+  display:flex; align-items:center; gap:14px;
+  background:linear-gradient(135deg,#1A1825,#2D2A4A);
+  border-radius:var(--radius); padding:22px 26px;
+  margin-bottom:24px; color:#fff;
+}
+.vocab-header h2 { font-family:'Fredoka One',cursive; font-size:1.4rem; margin-bottom:3px; }
+.vocab-header p { font-size:.82rem; opacity:.6; }
+.vocab-header-icon { font-size:2.2rem; }
+
+.vocab-topics-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:12px; margin-bottom:32px;
+}
+.vt-btn {
+  background:var(--blanc); border:3px solid transparent;
+  border-radius:16px; padding:16px 12px;
+  cursor:pointer; text-align:center;
+  box-shadow:var(--card-shadow);
+  transition:all .18s; font-family:'Nunito',sans-serif;
+  position:relative; overflow:hidden;
+}
+.vt-btn:hover { transform:translateY(-4px); box-shadow:0 8px 24px rgba(0,0,0,.13); border-color:#e0e0e0; }
+.vt-btn.active-topic { border-color:var(--groc); box-shadow:0 4px 20px rgba(255,206,26,.3); }
+.vt-btn .vt-icon { font-size:2rem; display:block; margin-bottom:6px; }
+.vt-btn .vt-name { font-size:.82rem; font-weight:800; color:var(--fosc); display:block; }
+.vt-btn .vt-count { font-size:.68rem; color:var(--gris); display:block; margin-top:2px; }
+.vt-done-badge {
+  position:absolute; top:6px; right:6px;
+  background:var(--verd); color:#fff; border-radius:50%;
+  width:18px; height:18px; font-size:.65rem; font-weight:900;
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* Vocab topic panel */
+.vocab-panel {
+  background:var(--blanc); border-radius:var(--radius);
+  box-shadow:var(--card-shadow); overflow:hidden;
+  margin-bottom:24px;
+}
+.vocab-panel-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px 22px; border-bottom:2px solid var(--fons);
+  flex-wrap:wrap; gap:10px;
+}
+.vocab-panel-header h3 { font-family:'Fredoka One',cursive; font-size:1.2rem; display:flex; align-items:center; gap:8px; }
+.vocab-mode-tabs { display:flex; gap:6px; }
+.vmode-tab {
+  background:var(--fons); border:2px solid transparent; border-radius:10px;
+  padding:6px 14px; font-family:'Nunito',sans-serif; font-size:.78rem; font-weight:800;
+  cursor:pointer; transition:all .15s; color:var(--gris);
+}
+.vmode-tab.active { background:var(--fosc); color:#fff; border-color:var(--fosc); }
+
+/* FLASHCARD mode */
+.flashcard-area { padding:28px; display:flex; flex-direction:column; align-items:center; gap:20px; min-height:300px; }
+.flashcard {
+  width:100%; max-width:400px;
+  background:linear-gradient(135deg,#1A1825,#2D2A4A);
+  border-radius:20px; padding:36px 28px;
+  text-align:center; cursor:pointer;
+  transition:transform .15s; box-shadow:0 8px 28px rgba(0,0,0,.15);
+  min-height:200px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+}
+.flashcard:hover { transform:scale(1.02); }
+.fc-emoji { font-size:3.5rem; display:block; margin-bottom:12px; }
+.fc-word { font-family:'Fredoka One',cursive; font-size:1.8rem; color:#fff; display:block; margin-bottom:8px; }
+.fc-translation { font-size:1rem; color:rgba(255,255,255,.5); display:block; min-height:24px; }
+.fc-translation.revealed { color:var(--groc); font-weight:800; font-size:1.1rem; }
+.fc-hint { font-size:.75rem; color:rgba(255,255,255,.3); margin-top:12px; }
+.flashcard-nav { display:flex; align-items:center; gap:16px; }
+.fc-nav-btn {
+  background:var(--fons); border:2px solid var(--gris-cl); border-radius:12px;
+  padding:10px 20px; font-family:'Fredoka One',cursive; font-size:1rem;
+  cursor:pointer; transition:all .15s;
+}
+.fc-nav-btn:hover { border-color:var(--fosc); background:#fff; }
+.fc-counter { font-weight:800; color:var(--gris); font-size:.88rem; }
+.fc-speak-btn {
+  background:var(--groc); border:none; border-radius:10px; padding:8px 14px;
+  font-size:.9rem; cursor:pointer; transition:transform .12s;
+}
+.fc-speak-btn:hover { transform:scale(1.1); }
+
+/* QUIZ mode */
+.quiz-area { padding:24px 28px; min-height:300px; }
+.quiz-q { font-family:'Fredoka One',cursive; font-size:1.3rem; margin-bottom:20px; display:flex; align-items:center; gap:10px; }
+.quiz-q .qemoji { font-size:1.8rem; }
+.quiz-opts { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+.quiz-opt {
+  background:var(--fons); border:3px solid transparent;
+  border-radius:14px; padding:14px; font-family:'Nunito',sans-serif;
+  font-size:.95rem; font-weight:700; cursor:pointer; text-align:center;
+  transition:all .15s;
+}
+.quiz-opt:hover:not(:disabled) { border-color:var(--blau); background:#EFF6FF; }
+.quiz-opt.q-correct { border-color:var(--verd); background:#D1FAE5; color:#065F46; }
+.quiz-opt.q-wrong { border-color:var(--vermell); background:#FFE4E9; color:#9B1C2D; }
+.quiz-opt.q-show { border-color:var(--verd); background:#D1FAE5; }
+.quiz-fb { border-radius:14px; padding:13px 16px; font-weight:700; font-size:.9rem; display:none; margin-bottom:12px; }
+.quiz-fb.show { display:flex; align-items:center; gap:10px; }
+.quiz-fb.ok { background:#D1FAE5; color:#065F46; }
+.quiz-fb.ko { background:#FFE4E9; color:#9B1C2D; }
+.quiz-progress { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+.quiz-prog-track { flex:1; background:var(--fons); border-radius:50px; height:8px; overflow:hidden; }
+.quiz-prog-fill { height:100%; border-radius:50px; background:var(--groc); transition:width .3s; }
+.quiz-score { font-weight:900; font-size:.85rem; color:var(--gris); }
+
+/* MATCH mode */
+.match-voc-area { padding:24px 28px; min-height:300px; }
+.match-voc-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.mv-item {
+  background:var(--fons); border:3px solid transparent;
+  border-radius:14px; padding:13px 16px; text-align:center;
+  cursor:pointer; font-weight:800; font-size:.9rem;
+  transition:all .15s; min-height:52px; display:flex; align-items:center; justify-content:center;
+}
+.mv-item:hover { border-color:var(--blau); background:#EFF6FF; }
+.mv-item.mv-sel { border-color:var(--taronja); background:#FFF7ED; }
+.mv-item.mv-match { border-color:var(--verd); background:#D1FAE5; color:#065F46; cursor:default; pointer-events:none; }
+.mv-item.mv-bad { border-color:var(--vermell); background:#FFE4E9; animation:shake .3s; }
+.match-voc-feedback { text-align:center; padding:12px; font-weight:800; min-height:24px; }
+
+/* WRITE mode */
+.write-area { padding:24px 28px; min-height:300px; }
+.write-q { display:flex; align-items:center; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+.write-emoji { font-size:3rem; }
+.write-q-text { font-family:'Fredoka One',cursive; font-size:1.2rem; }
+.write-input-wrap { display:flex; gap:10px; align-items:center; margin-bottom:14px; }
+.write-inp {
+  flex:1; border:3px solid var(--gris-cl); border-radius:14px;
+  padding:13px 18px; font-family:'Nunito',sans-serif; font-size:1.1rem; font-weight:800;
+  outline:none; transition:border-color .2s;
+}
+.write-inp:focus { border-color:var(--blau); }
+.write-inp.ok { border-color:var(--verd); background:#D1FAE5; color:#065F46; }
+.write-inp.ko { border-color:var(--vermell); background:#FFE4E9; color:#9B1C2D; }
+.btn-write-check {
+  background:var(--blau); color:#fff; border:none; border-radius:14px;
+  padding:13px 22px; font-family:'Fredoka One',cursive; font-size:1rem;
+  cursor:pointer; box-shadow:0 4px 0 var(--blau-d); transition:transform .12s;
+}
+.btn-write-check:hover { transform:translateY(-2px); }
+.write-fb { font-size:.88rem; font-weight:700; min-height:22px; }
+.write-fb.ok { color:#065F46; }
+.write-fb.ko { color:#DC2626; }
+.write-nav { display:flex; justify-content:space-between; align-items:center; margin-top:16px; }
+.write-count { font-size:.82rem; font-weight:800; color:var(--gris); }
+
+/* Vocab results */
+.vocab-result {
+  text-align:center; padding:32px 20px;
+  display:none;
+}
+.vocab-result.show { display:block; }
+.vr-score { font-family:'Fredoka One',cursive; font-size:3rem; color:var(--verd); }
+.vr-msg { font-size:1rem; color:var(--gris); margin:8px 0 20px; }
+
+/* LISTEN mode */
+.listen-area { padding:24px 28px; min-height:300px; display:flex; flex-direction:column; align-items:center; gap:20px; }
+.listen-word-display {
+  text-align:center; background:linear-gradient(135deg,#1A1825,#2D2A4A);
+  border-radius:20px; padding:32px 40px; width:100%; max-width:420px;
+  cursor:pointer; transition:transform .15s;
+}
+.listen-word-display:hover { transform:scale(1.02); }
+.listen-emoji { font-size:3.5rem; display:block; margin-bottom:12px; }
+.listen-prompt { color:rgba(255,255,255,.5); font-size:.88rem; margin-bottom:8px; }
+.listen-play-btn {
+  background:var(--groc); border:none; border-radius:14px;
+  padding:12px 28px; font-family:'Fredoka One',cursive; font-size:1.1rem;
+  cursor:pointer; transition:transform .12s; margin-top:8px;
+}
+.listen-play-btn:hover { transform:scale(1.05); }
+.listen-opts { display:grid; grid-template-columns:1fr 1fr; gap:10px; width:100%; max-width:500px; }
+.listen-opt {
+  background:var(--fons); border:3px solid transparent;
+  border-radius:14px; padding:13px; font-family:'Nunito',sans-serif;
+  font-size:.95rem; font-weight:800; cursor:pointer; text-align:center;
+  transition:all .15s;
+}
+.listen-opt:hover:not(:disabled) { border-color:var(--blau); background:#EFF6FF; }
+.listen-opt.ok { border-color:var(--verd); background:#D1FAE5; color:#065F46; }
+.listen-opt.ko { border-color:var(--vermell); background:#FFE4E9; color:#9B1C2D; }
+.listen-opt.show-ok { border-color:var(--verd); background:#D1FAE5; }
+.listen-score { font-weight:900; font-size:.88rem; color:var(--gris); }
+
+/* WORD SEARCH */
+.wordsearch-area { padding:20px 24px; }
+.ws-instructions { font-size:.82rem; font-weight:700; color:var(--gris); margin-bottom:16px; text-align:center; }
+.ws-container { display:flex; gap:20px; flex-wrap:wrap; justify-content:center; }
+.ws-grid-wrap { overflow-x:auto; }
+.ws-grid {
+  display:inline-grid; border:3px solid var(--gris-cl); border-radius:12px;
+  overflow:hidden; user-select:none; cursor:crosshair;
+}
+.ws-cell {
+  width:36px; height:36px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Fredoka One',cursive; font-size:1rem; font-weight:900;
+  background:#fff; border:1px solid #F0F0F0; text-transform:uppercase;
+  transition:background .1s; position:relative;
+}
+.ws-cell.selecting { background:#DBEAFE; color:var(--blau); }
+.ws-cell.found { background:#D1FAE5; color:#065F46; }
+.ws-cell.found-hi { background:#A7F3D0; color:#064E3B; }
+.ws-word-list { flex:1; min-width:160px; }
+.ws-word-list h4 { font-family:'Fredoka One',cursive; font-size:.95rem; margin-bottom:10px; color:var(--fosc); }
+.ws-word-item {
+  display:flex; align-items:center; gap:8px;
+  padding:5px 0; font-weight:700; font-size:.88rem;
+  border-bottom:1px solid var(--fons); transition:opacity .3s;
+}
+.ws-word-item.found-word { text-decoration:line-through; opacity:.5; }
+.ws-word-item .wi-em { font-size:1.1rem; }
+.ws-complete { text-align:center; padding:20px; display:none; }
+.ws-complete.show { display:block; }
+
+@media(max-width:520px) {
+  .vocab-topics-grid { grid-template-columns:repeat(3,1fr); }
+  .quiz-opts { grid-template-columns:1fr; }
+  .match-voc-grid { grid-template-columns:1fr; }
+  .listen-opts { grid-template-columns:1fr; }
+  .vt-btn { padding:12px 8px; }
+  .ws-cell { width:30px; height:30px; font-size:.85rem; }
+}</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header id="app-header">
+  <div class="logo">Aprèn <em>Català</em> 🌟</div>
+  <div class="header-right">
+    <div class="student-pill" id="header-pill">
+      <span class="student-dot"></span>
+      <span id="pill-text">—</span>
+    </div>
+    <button class="btn-logout" onclick="logout()">Canviar alumne</button>
+  </div>
+</header>
+
+<!-- ═══ LOGIN ═══ -->
+<div id="screen-login" class="screen active">
+  <div class="login-hero">
+    <span class="login-mascot">🦜</span>
+    <h1>Aprèn català<br>amb nosaltres!</h1>
+    <p>Activitats divertides per a nouvinguts de 3r a 6è de primària</p>
+  </div>
+  <div class="login-card">
+    <h2>🔑 Entra amb el teu codi</h2>
+    <div class="input-group">
+      <label>Codi d'alumne (4 lletres)</label>
+      <input type="text" class="code-input" id="code-input" maxlength="4"
+        placeholder="----" autocomplete="off" spellcheck="false"
+        oninput="onCodeInput(this)" onkeydown="if(event.key==='Enter')doLogin()">
+      <div class="code-hint">El teu/teva mestre/a t'ha donat un codi de <strong>4 lletres</strong></div>
+      <div class="error-msg" id="error-msg"></div>
+    </div>
+    <button class="btn-entrar" id="btn-entrar" onclick="doLogin()" disabled>Entrar 🚀</button>
+
+    <div class="demo-codes">
+      <strong>🎓 Codis de prova (clica per entrar)</strong>
+      <div class="demo-grid" id="demo-grid"></div>
+    </div>
+    <div style="text-align:center;margin-top:14px;padding-top:14px;border-top:1px solid #F3F4F6">
+      <button onclick="goToAdmin()" style="background:none;border:none;color:#9CA3AF;font-size:.78rem;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;transition:color .2s;padding:6px 12px;border-radius:8px;display:inline-flex;align-items:center;gap:5px;" onmouseover="this.style.color='#065F46'" onmouseout="this.style.color='#9CA3AF'">
+        🛡️ Accés mestre / administrador
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DASHBOARD ═══ -->
+<div id="screen-dashboard" class="screen">
+  <div style="max-width:920px;margin:0 auto;padding:24px 20px 40px">
+    <div class="dash-hero">
+      <div class="dash-hero-left">
+        <h2 id="dash-greeting">Bon dia!</h2>
+        <p id="dash-sub">Tria una dimensió per practicar avui</p>
+      </div>
+      <div class="dash-stats">
+        <div class="stat-chip"><span class="sv" id="stat-done">0</span><span class="sl">Fetes</span></div>
+        <div class="stat-chip"><span class="sv" id="stat-total">0</span><span class="sl">Total</span></div>
+        <div class="stat-chip"><span class="sv" id="stat-pct">0%</span><span class="sl">Progrés</span></div>
+      </div>
+    </div>
+    <div class="section-label">📐 Les 4 dimensions de la llengua</div>
+    <div class="dims-grid">
+      <div class="dim-card" data-dim="oral-c" onclick="openDim('oral-c')">
+        <span class="dim-icon-big">👂</span>
+        <h3>Comprensió oral</h3>
+        <p>Escolta àudios i respon preguntes de comprensió</p>
+        <div class="dim-prog-wrap">
+          <div class="dim-prog-track"><div class="dim-prog-fill" id="dp-oral-c" style="width:0%"></div></div>
+          <div class="dim-prog-label" id="dl-oral-c">0 / 0</div>
+        </div>
+      </div>
+      <div class="dim-card" data-dim="oral-e" onclick="openDim('oral-e')">
+        <span class="dim-icon-big">🗣️</span>
+        <h3>Expressió oral</h3>
+        <p>Practica expressions i construeix frases orals</p>
+        <div class="dim-prog-wrap">
+          <div class="dim-prog-track"><div class="dim-prog-fill" id="dp-oral-e" style="width:0%"></div></div>
+          <div class="dim-prog-label" id="dl-oral-e">0 / 0</div>
+        </div>
+      </div>
+      <div class="dim-card" data-dim="lectora" onclick="openDim('lectora')">
+        <span class="dim-icon-big">📖</span>
+        <h3>Comprensió lectora</h3>
+        <p>Llegeix textos i respon preguntes de comprensió</p>
+        <div class="dim-prog-wrap">
+          <div class="dim-prog-track"><div class="dim-prog-fill" id="dp-lectora" style="width:0%"></div></div>
+          <div class="dim-prog-label" id="dl-lectora">0 / 0</div>
+        </div>
+      </div>
+      <div class="dim-card" data-dim="escrita" onclick="openDim('escrita')">
+        <span class="dim-icon-big">✍️</span>
+        <h3>Expressió escrita</h3>
+        <p>Aprèn a escriure i expressar-te en català</p>
+        <div class="dim-prog-wrap">
+          <div class="dim-prog-track"><div class="dim-prog-fill" id="dp-escrita" style="width:0%"></div></div>
+          <div class="dim-prog-label" id="dl-escrita">0 / 0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:8px">📚 Vocabulari temàtic</div>
+    <div class="dim-card" data-dim="vocab" onclick="goTo('screen-vocab')" style="display:flex;align-items:center;gap:18px;padding:20px 24px;cursor:pointer;margin-bottom:8px;border-radius:var(--radius);background:linear-gradient(135deg,#1A1825,#2D2A4A);color:#fff;box-shadow:var(--card-shadow);transition:transform .18s,box-shadow .18s;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 32px rgba(0,0,0,.2)'" onmouseout="this.style.transform='';this.style.boxShadow='var(--card-shadow)'">
+      <span style="font-size:2.4rem">🔤</span>
+      <div style="flex:1">
+        <div style="font-family:'Fredoka One',cursive;font-size:1.1rem;margin-bottom:3px">Vocabulari per temes</div>
+        <div style="font-size:.82rem;opacity:.65">Dies, mesos, números, cos humà, animals, oficis i molt més — 17 temes</div>
+      </div>
+      <div id="vocab-dash-prog" style="font-family:'Fredoka One',cursive;font-size:1.3rem;color:var(--groc)">→</div>
+    </div>
+  </div>
+</div>
+<div id="screen-activities" class="screen">
+  <div style="max-width:860px;margin:0 auto;padding:20px 20px 40px">
+    <button class="back-btn" onclick="goTo('screen-dashboard')">← Tornar al tauler</button>
+    <div class="acts-header">
+      <div class="dim-icon-med" id="dim-icon-med"></div>
+      <div>
+        <h2 id="dim-title-acts">—</h2>
+        <p id="dim-desc-acts">—</p>
+      </div>
+    </div>
+    <div class="act-list" id="act-list"></div>
+  </div>
+</div>
+
+<!-- ═══ EXERCISE ═══ -->
+<div id="screen-exercise" class="screen">
+  <div style="max-width:720px;margin:0 auto;padding:20px 20px 40px">
+    <button class="back-btn" onclick="goTo('screen-activities')">← Tornar</button>
+    <div class="ex-topbar">
+      <div class="ex-prog-track"><div class="ex-prog-fill" id="ex-prog" style="width:0%"></div></div>
+      <div class="ex-step" id="ex-step">1 / 5</div>
+    </div>
+    <div class="ex-card" id="ex-card"></div>
+    <div class="feedback" id="feedback">
+      <span class="fb-icon" id="fb-icon"></span>
+      <div class="fb-body"><strong id="fb-title"></strong><span id="fb-msg"></span></div>
+    </div>
+    <button class="btn-check" id="btn-check" onclick="checkAns()" disabled>Comprova ✓</button>
+    <button class="btn-next" id="btn-next" onclick="nextQ()">Següent →</button>
+  </div>
+</div>
+
+<!-- ═══ VOCABULARY ═══ -->
+<div id="screen-vocab" class="screen">
+  <div style="max-width:960px;margin:0 auto;padding:20px 20px 48px">
+    <button class="back-btn" onclick="goTo('screen-dashboard')">← Tornar al tauler</button>
+    <div class="vocab-header">
+      <span class="vocab-header-icon">🔤</span>
+      <div>
+        <h2>Vocabulari per temes</h2>
+        <p>Aprèn paraules noves i practica amb activitats interactives</p>
+      </div>
+    </div>
+    <div class="section-label">Tria un tema</div>
+    <div class="vocab-topics-grid" id="vocab-topics-grid"></div>
+
+    <div class="vocab-panel" id="vocab-panel" style="display:none">
+      <div class="vocab-panel-header">
+        <h3 id="vp-title">—</h3>
+        <div class="vocab-mode-tabs">
+          <button class="vmode-tab active" onclick="setVocabMode('flashcard')">🃏 Targetes</button>
+          <button class="vmode-tab" onclick="setVocabMode('quiz')">❓ Quiz</button>
+          <button class="vmode-tab" onclick="setVocabMode('match')">🔗 Relaciona</button>
+          <button class="vmode-tab" onclick="setVocabMode('listen')">🔊 Escolta</button>
+          <button class="vmode-tab" onclick="setVocabMode('write')">✏️ Escriu</button>
+          <button class="vmode-tab" onclick="setVocabMode('wordsearch')">🔍 Sopa</button>
+        </div>
+      </div>
+      <div id="vocab-mode-area"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ADMIN ═══ -->
+<div id="screen-admin" class="screen">
+
+  <!-- Admin login -->
+  <div id="admin-login-view" class="admin-login-overlay" style="display:flex">
+    <div class="admin-login-card">
+      <div class="admin-login-badge">
+        <div class="admin-shield">🛡️</div>
+        <div>
+          <h2>Zona del mestre</h2>
+          <p>Accés restringit al professorat</p>
+        </div>
+      </div>
+      <div class="admin-field">
+        <label>Usuari</label>
+        <input type="text" class="admin-input" id="admin-user" placeholder="mestre" autocomplete="off"
+          oninput="clearAdminErr()" onkeydown="if(event.key==='Enter')tryAdminLogin()">
+      </div>
+      <div class="admin-field">
+        <label>Contrasenya</label>
+        <input type="password" class="admin-input" id="admin-pass" placeholder="••••••"
+          oninput="clearAdminErr()" onkeydown="if(event.key==='Enter')tryAdminLogin()">
+      </div>
+      <div class="admin-err" id="admin-err"></div>
+      <button class="btn-admin-login" onclick="tryAdminLogin()">Entrar al tauler 🛡️</button>
+      <button class="admin-back-link" onclick="goTo('screen-login')">← Tornar a la pantalla d'alumnes</button>
+    </div>
+  </div>
+
+  <!-- Admin panel -->
+  <div id="admin-panel-view" style="display:none">
+    <div class="admin-panel">
+      <div class="admin-topbar">
+        <div class="admin-topbar-left">
+          <span class="shield-sm">🛡️</span>
+          <div>
+            <h1>Tauler del mestre</h1>
+            <span>Control de progrés dels alumnes</span>
+          </div>
+        </div>
+        <button class="btn-admin-out" onclick="adminLogout()">Tancar sessió</button>
+      </div>
+
+      <div class="admin-content">
+        <!-- Summary stats -->
+        <div class="admin-summary" id="admin-summary"></div>
+
+        <!-- 4 dimension buttons -->
+        <div class="admin-dims-title">📐 Tria una dimensió per veure el progrés dels alumnes</div>
+        <div class="admin-dims-grid">
+          <button class="admin-dim-btn" data-dim="oral-c" onclick="openAdminDim('oral-c')">
+            <span class="adb-icon">👂</span>
+            <span class="adb-title">Comprensió oral</span>
+            <span class="adb-sub">Escolta i comprèn missatges orals</span>
+            <div class="adb-stats" id="adb-stats-oral-c"></div>
+          </button>
+          <button class="admin-dim-btn" data-dim="oral-e" onclick="openAdminDim('oral-e')">
+            <span class="adb-icon">🗣️</span>
+            <span class="adb-title">Expressió oral</span>
+            <span class="adb-sub">Construeix i practica frases orals</span>
+            <div class="adb-stats" id="adb-stats-oral-e"></div>
+          </button>
+          <button class="admin-dim-btn" data-dim="lectora" onclick="openAdminDim('lectora')">
+            <span class="adb-icon">📖</span>
+            <span class="adb-title">Comprensió lectora</span>
+            <span class="adb-sub">Llegeix textos i respon preguntes</span>
+            <div class="adb-stats" id="adb-stats-lectora"></div>
+          </button>
+          <button class="admin-dim-btn" data-dim="escrita" onclick="openAdminDim('escrita')">
+            <span class="adb-icon">✍️</span>
+            <span class="adb-title">Expressió escrita</span>
+            <span class="adb-sub">Escriu i expressa't en català</span>
+            <div class="adb-stats" id="adb-stats-escrita"></div>
+          </button>
+        </div>
+
+        <!-- Dimension detail -->
+        <div class="admin-dim-detail" id="admin-dim-detail">
+          <button class="btn-back-dims" onclick="closeAdminDim()">← Tornar a les dimensions</button>
+          <div class="admin-dim-header" id="admin-dim-header"></div>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead id="admin-table-head"></thead>
+              <tbody id="admin-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Student Management -->
+        <div class="admin-section-title">👥 Gestió d'alumnes</div>
+        <div class="students-toolbar">
+          <div style="font-size:.85rem;color:var(--gris);font-weight:700" id="students-count-label">— alumnes registrats</div>
+          <button class="btn-add-student" onclick="openStudentModal()">➕ Afegir alumne</button>
+        </div>
+        <div class="students-grid" id="students-grid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ STUDENT MANAGEMENT MODAL ═══ -->
+<div class="modal-backdrop" id="student-modal">
+  <div class="modal-box">
+    <div class="modal-title"><span id="modal-icon">👤</span><span id="modal-title-text">Nou alumne</span></div>
+
+    <div class="form-row">
+      <label>Codi d'accés (4 lletres)</label>
+      <div class="code-row">
+        <input type="text" class="form-input code-field" id="modal-code" maxlength="4"
+          placeholder="ABCD" oninput="this.value=this.value.toUpperCase().replace(/[^A-ZÀÈÉÍÏÒÓÚÜ]/g,'')">
+        <button class="btn-gen-code" onclick="generateCode()">🎲 Genera</button>
+      </div>
+    </div>
+
+    <div class="form-row-2">
+      <div class="form-row" style="margin-bottom:0">
+        <label>Nom</label>
+        <input type="text" class="form-input" id="modal-nom" placeholder="Maria">
+      </div>
+      <div class="form-row" style="margin-bottom:0">
+        <label>Cognom</label>
+        <input type="text" class="form-input" id="modal-cognom" placeholder="Garcia">
+      </div>
+    </div>
+
+    <div class="form-row-2" style="margin-top:16px">
+      <div class="form-row" style="margin-bottom:0">
+        <label>Curs</label>
+        <select class="form-select" id="modal-curs">
+          <option value="3">3r</option>
+          <option value="4">4t</option>
+          <option value="5">5è</option>
+          <option value="6">6è</option>
+        </select>
+      </div>
+      <div class="form-row" style="margin-bottom:0">
+        <label>Grup / Classe</label>
+        <input type="text" class="form-input" id="modal-grup" placeholder="A">
+      </div>
+    </div>
+
+    <div class="form-row" style="margin-top:16px">
+      <label>Nivell de català</label>
+      <select class="form-select" id="modal-nivell">
+        <option value="new">Acabat d'arribar</option>
+        <option value="mid">Fa uns mesos</option>
+        <option value="year">Fa gairebé un any</option>
+      </select>
+    </div>
+
+    <div class="form-row-2">
+      <div class="form-row" style="margin-bottom:0">
+        <label>Data d'incorporació</label>
+        <input type="date" class="form-input" id="modal-data">
+      </div>
+      <div class="form-row" style="margin-bottom:0">
+        <label>Llengua d'origen</label>
+        <input type="text" class="form-input" id="modal-llengua" placeholder="Àrab, Amazic...">
+      </div>
+    </div>
+
+    <div class="modal-err" id="modal-err"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel-modal" onclick="closeStudentModal()">Cancel·lar</button>
+      <button class="btn-save" onclick="saveStudent()">💾 Guardar alumne</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ RESULTS ═══ -->
+<div id="screen-results" class="screen">
+  <div style="max-width:580px;margin:0 auto;padding:40px 20px;text-align:center">
+    <span class="res-emoji" id="res-emoji">🎉</span>
+    <span class="stars"><span class="star" id="s1">☆</span><span class="star" id="s2">☆</span><span class="star" id="s3">☆</span></span>
+    <div class="res-title" id="res-title">Excel·lent!</div>
+    <div class="res-score-big"><span id="res-ok">0</span><span> / <span id="res-tot">0</span></span></div>
+    <div class="res-msg" id="res-msg"></div>
+    <div class="res-actions">
+      <button class="btn-sec" onclick="goTo('screen-activities')">Més activitats</button>
+      <button class="btn-pri" onclick="goTo('screen-dashboard')">Inici 🏠</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════
+   STUDENT CODES DATABASE (dinàmic)
+════════════════════════════════════════ */
+const DEFAULT_STUDENTS = {
+  'ALBA': { name:'Alba',   surname:'', grade:3, level:'new',  grup:'', dataIncorp:'', llengua:'', gradeLabel:'3r',  levelLabel:'Acabat d\'arribar' },
+  'MARC': { name:'Marc',   surname:'', grade:3, level:'year', grup:'', dataIncorp:'', llengua:'', gradeLabel:'3r',  levelLabel:'Fa gairebé un any' },
+  'LAIA': { name:'Laia',   surname:'', grade:4, level:'new',  grup:'', dataIncorp:'', llengua:'', gradeLabel:'4t',  levelLabel:'Acabat d\'arribar' },
+  'OMAR': { name:'Omar',   surname:'', grade:4, level:'mid',  grup:'', dataIncorp:'', llengua:'', gradeLabel:'4t',  levelLabel:'Fa uns mesos' },
+  'INES': { name:'Inès',   surname:'', grade:5, level:'mid',  grup:'', dataIncorp:'', llengua:'', gradeLabel:'5è',  levelLabel:'Fa uns mesos' },
+  'AMIR': { name:'Amir',   surname:'', grade:5, level:'year', grup:'', dataIncorp:'', llengua:'', gradeLabel:'5è',  levelLabel:'Fa gairebé un any' },
+  'SARA': { name:'Sara',   surname:'', grade:6, level:'new',  grup:'', dataIncorp:'', llengua:'', gradeLabel:'6è',  levelLabel:'Acabat d\'arribar' },
+  'RAMI': { name:'Rami',   surname:'', grade:6, level:'year', grup:'', dataIncorp:'', llengua:'', gradeLabel:'6è',  levelLabel:'Fa gairebé un any' },
+};
+
+const GRADE_LABELS = { 3:'3r', 4:'4t', 5:'5è', 6:'6è' };
+const LEVEL_LABELS = { 'new':'Acabat d\'arribar', 'mid':'Fa uns mesos', 'year':'Fa gairebé un any' };
+
+function loadStudents() {
+  try {
+    const d = localStorage.getItem('catala_students');
+    return d ? JSON.parse(d) : JSON.parse(JSON.stringify(DEFAULT_STUDENTS));
+  } catch(e) { return JSON.parse(JSON.stringify(DEFAULT_STUDENTS)); }
+}
+function saveStudents(obj) {
+  try { localStorage.setItem('catala_students', JSON.stringify(obj)); } catch(e) {}
+}
+let STUDENTS = loadStudents();
+
+/* ════════════════════════════════════════
+   ACTIVITY DATABASE
+════════════════════════════════════════ */
+const DB = {
+  'oral-c': {
+    icon:'👂', color:'#3B82F6', bg:'#EFF6FF',
+    title:'Comprensió oral', desc:'Escolta àudios i respon preguntes',
+    acts: [
+      { id:'oc1', title:'Saludos i despedides', desc:'Identifica saludos bàsics en català',
+        grade:3, level:'new', typeLabel:'Àudio + Test',
+        qs:[
+          { type:'audio-test',
+            audio:'Bon dia! Em dic la Marta. I tu, com et dius?',
+            q:'Quan diem "bon dia"?',
+            opts:['Al matí 🌅','A la tarda 🌆','A la nit 🌙','A l\'hora de dormir 😴'],
+            ok:0, exp:'"Bon dia" es diu al matí, quan comencem el dia!' },
+          { type:'audio-test',
+            audio:'Adéu! Fins demà! Bona tarda!',
+            q:'Quines paraules de comiat sents?',
+            opts:['Hola i bon dia','Adéu i bona tarda','Gràcies i si us plau','Bon dia i bona nit'],
+            ok:1, exp:'"Adéu" i "bona tarda" són comiat. "Hola" és salutació!' },
+          { type:'order',
+            q:'Ordena la salutació correctament',
+            words:['dic','Bon','Em','Marta','dia'],
+            correct:['Bon','dia','Em','dic','Marta'],
+            exp:'La frase és: "Bon dia! Em dic Marta."' },
+        ]
+      },
+      { id:'oc2', title:'La família', desc:'Escolta i identifica membres de la família',
+        grade:3, level:'year', typeLabel:'Àudio + Relacionar',
+        qs:[
+          { type:'audio-test',
+            audio:'La meva família: el pare, la mare, el germà gran i la germana petita.',
+            q:'Quants fills hi ha en aquesta família?',
+            opts:['Un fill','Dos fills','Tres fills','Quatre fills'],
+            ok:1, exp:'Hi ha dos fills: el germà i la germana!' },
+          { type:'match',
+            q:'Relaciona cada paraula amb la seva parella',
+            pairs:[['Pare 👨','Mare 👩'],['Germà 👦','Germana 👧'],['Avi 👴','Àvia 👵']],
+            exp:'La família en català té formes masculines i femenines!' },
+          { type:'fill',
+            q:'Completa les paraules de la família',
+            txt:'El ___ i la ___ són els meus pares. El meu ___ es diu Pau.',
+            blanks:['pare','mare','germà'],
+            exp:'Molt bé! Ja coneixes els membres de la família en català!' },
+        ]
+      },
+      { id:'oc3', title:'A l\'escola', desc:'Vocabulari de l\'aula i espais de l\'escola',
+        grade:4, level:'new', typeLabel:'Àudio + Test',
+        qs:[
+          { type:'audio-test',
+            audio:'A la meva classe hi ha una pissarra, moltes taules, cadires i molts llibres.',
+            q:'On és la pissarra?',
+            opts:['Al pati','A la classe','Al menjador','A la biblioteca'],
+            ok:1, exp:'La pissarra és a la classe, on aprenem!' },
+          { type:'match',
+            q:'Relaciona cada lloc amb el que fem allà',
+            pairs:[['Biblioteca 📚','Llegir i estudiar'],['Gimnàs 🏃','Fer esport'],['Menjador 🍽️','Dinar']],
+            exp:'Cada espai de l\'escola té la seva funció!' },
+          { type:'audio-test',
+            audio:'Per anar al bany has de demanar permís al mestre.',
+            q:'On has d\'anar per demanar permís?',
+            opts:['A la directora','Al mestre','A la secretaria','A casa'],
+            ok:1, exp:'Demanes permís al mestre o a la mestra!' },
+        ]
+      },
+      { id:'oc4', title:'El temps meteorològic', desc:'Descriu el temps que fa avui',
+        grade:4, level:'mid', typeLabel:'Àudio + Completar',
+        qs:[
+          { type:'audio-test',
+            audio:'Avui fa molt de sol i calor. Demà plourà i farà fred.',
+            q:'Quin temps fa avui?',
+            opts:['Plou i fa fred','Fa sol i calor','Neva','Hi ha boira'],
+            ok:1, exp:'L\'àudio diu clarament que avui fa sol i calor!' },
+          { type:'fill',
+            q:'Completa el pronòstic del temps',
+            txt:'Avui fa ___ i calor. Demà farà ___ i ___ molt.',
+            blanks:['sol','fred','plourà'],
+            exp:'El temps pot canviar molt d\'un dia a l\'altre!' },
+          { type:'match',
+            q:'Relaciona cada fenomen amb la seva descripció',
+            pairs:[['☀️ Sol','Fa calor i llum'],['🌧️ Pluja','Cau aigua del cel'],['❄️ Neu','Fa molt de fred']],
+            exp:'Ja coneixes el vocabulari del temps en català!' },
+        ]
+      },
+      { id:'oc5', title:'La rutina diària', desc:'Escolta i ordena activitats quotidianes',
+        grade:5, level:'new', typeLabel:'Àudio + Ordenar',
+        qs:[
+          { type:'audio-test',
+            audio:'Cada matí em llevo a les set, em rento la cara, esmorzar a les set i mitja i arribo a l\'escola a les nou.',
+            q:'A quina hora esmorza?',
+            opts:['A les set','A les set i mitja','A les vuit','A les nou'],
+            ok:1, exp:'L\'àudio diu "esmorzo a les set i mitja"!' },
+          { type:'order',
+            q:'Ordena la rutina del matí de primera a última',
+            words:['Anar a l\'escola','Esmorzar','Llevar-se','Vestir-se','Rentar-se'],
+            correct:['Llevar-se','Rentar-se','Vestir-se','Esmorzar','Anar a l\'escola'],
+            exp:'Primer ens llevem, ens rentem, ens vestim, esmorzem i anem a l\'escola!' },
+          { type:'fill',
+            q:'Completa la rutina',
+            txt:'Em ___ a les set del matí. Primer ___ la cara i després ___.',
+            blanks:['llevo','em rento','esmorzo'],
+            exp:'La rutina en català usa verbs reflexius com "llevar-se", "rentar-se"!' },
+        ]
+      },
+      { id:'oc6', title:'Notícies breus', desc:'Comprèn textos informatius orals',
+        grade:6, level:'year', typeLabel:'Àudio + Anàlisi',
+        qs:[
+          { type:'audio-test',
+            audio:'Notícia: Ahir al zoo de Barcelona va néixer un lleó. Els visitants estan molt contents i esperen poder-lo veure aviat.',
+            q:'On va passar la notícia?',
+            opts:['Al zoo de Madrid','Al zoo de Barcelona','En un parc natural','En un circ'],
+            ok:1, exp:'L\'àudio diu "al zoo de Barcelona"!' },
+          { type:'fill',
+            q:'Respon les preguntes sobre la notícia',
+            txt:'La notícia parla d\'un ___ que va néixer ahir al zoo. La gent n\'estava molt ___ i vol veure\'l ___.',
+            blanks:['lleó','contenta','aviat'],
+            exp:'Has entès perfectament la notícia oral!' },
+          { type:'test',
+            q:'Quin element fa que sigui una "notícia" i no un "conte"?',
+            opts:['Que és inventada','Que parla de fets reals i recents','Que té personatges fantàstics','Que comença amb "hi havia una vegada"'],
+            ok:1, exp:'Les notícies parlen de fets reals i recents, no inventats!' },
+        ]
+      },
+    ]
+  },
+
+  'oral-e': {
+    icon:'🗣️', color:'#F97316', bg:'#FFF7ED',
+    title:'Expressió oral', desc:'Practica expressions i construeix frases',
+    acts: [
+      { id:'oe1', title:'Presentar-me', desc:'Aprèn a dir qui ets en català',
+        grade:3, level:'new', typeLabel:'Completar + Ordenar',
+        qs:[
+          { type:'fill',
+            q:'Completa la teva presentació',
+            txt:'Em ___ ... Tinc ... ___. Vinc de ___ i parlo una mica de català.',
+            blanks:['dic','anys','...'],
+            exp:'Per presentar-nos diem el nostre nom, edat i d\'on venim!' },
+          { type:'order',
+            q:'Ordena la presentació d\'en Karim',
+            words:['Karim','Em','vinc','dic','anys','tinc','vuit','del Marroc'],
+            correct:['Em','dic','Karim','tinc','vuit','anys','vinc','del Marroc'],
+            exp:'"Em dic Karim, tinc vuit anys, vinc del Marroc" és la presentació correcta!' },
+          { type:'test',
+            q:'Quina frase et serveix per dir d\'on véns?',
+            opts:['M\'agrada molt el futbol','Vinc de la Xina','Gràcies per ajudar-me','Fins aviat!'],
+            ok:1, exp:'"Vinc de..." ens serveix per dir d\'on som!' },
+        ]
+      },
+      { id:'oe2', title:'Demanar ajuda a classe', desc:'Frases essencials per comunicar-te',
+        grade:3, level:'mid', typeLabel:'Test + Relacionar',
+        qs:[
+          { type:'test',
+            q:'Com demanes que et repeteixin alguna cosa?',
+            opts:['Ho pots repetir, si us plau?','No entenc mai res','Parla més fort!','No parlo català'],
+            ok:0, exp:'"Ho pots repetir, si us plau?" és la forma educada de demanar!' },
+          { type:'match',
+            q:'Relaciona la situació amb la frase adequada',
+            pairs:[['No entenc la paraula 🤔','Com es diu...?'],['Necessito ajuda ✋','Em pots ajudar?'],['No sento bé 👂','Ho pots repetir?']],
+            exp:'Aprendre a demanar ajuda en català és molt important!' },
+          { type:'order',
+            q:'Ordena la frase per demanar ajuda',
+            words:['plau','si','ajudar-me','Em','pots','us'],
+            correct:['Em','pots','ajudar-me','si','us','plau'],
+            exp:'"Em pots ajudar, si us plau?" és una frase clau a l\'escola!' },
+        ]
+      },
+      { id:'oe3', title:'Al mercat i a la botiga', desc:'Aprèn a comprar i demanar productes',
+        grade:4, level:'new', typeLabel:'Test + Completar',
+        qs:[
+          { type:'test',
+            q:'Com demanes el preu d\'un producte?',
+            opts:['Quant val, si us plau?','Dona\'m diners','Vull saber','Tinc fam'],
+            ok:0, exp:'"Quant val?" és la manera de preguntar el preu en català!' },
+          { type:'fill',
+            q:'Completa la conversa a la fruiteria',
+            txt:'— Bon dia! ___ voldria un quilo de tomàquets. ___ valen?',
+            blanks:['Jo','Quant'],
+            exp:'Al mercat usem fórmules de cortesia com "bon dia" i "quant val?"!' },
+          { type:'order',
+            q:'Ordena la conversa completa',
+            words:['dia!','Bon','plau','Voldria','si','pa','us','una','barra','de'],
+            correct:['Bon','dia!','Voldria','una','barra','de','pa','si','us','plau'],
+            exp:'"Bon dia! Voldria una barra de pa, si us plau." Perfecte!' },
+        ]
+      },
+      { id:'oe4', title:'Gustos i preferències', desc:'Di el que t\'agrada i no t\'agrada',
+        grade:5, level:'new', typeLabel:'Test + Completar',
+        qs:[
+          { type:'test',
+            q:'Com expresses que t\'agrada molt alguna cosa?',
+            opts:['M\'encanta!','No ho sé','Potser sí','No em fa res'],
+            ok:0, exp:'"M\'encanta" vol dir que t\'agrada moltíssim!' },
+          { type:'match',
+            q:'Relaciona l\'expressió amb el seu grau',
+            pairs:[['M\'encanta ❤️','Molt positiu'],['M\'és igual 😐','Indiferent'],['No suporto 😤','Molt negatiu']],
+            exp:'Podem expressar els gustos en graus molt positius, indiferents o molt negatius!' },
+          { type:'fill',
+            q:'Completa les opinions',
+            txt:'___ molt la música però no ___ gens el soroll. Els llibres ___ indiferents.',
+            blanks:['M\'agrada','m\'agrada','m\'són'],
+            exp:'Usem "m\'agrada", "no m\'agrada" i "m\'és igual" per expressar gustos!' },
+        ]
+      },
+      { id:'oe5', title:'Explicar el cap de setmana', desc:'Parla d\'experiències passades',
+        grade:6, level:'new', typeLabel:'Ordenar + Completar',
+        qs:[
+          { type:'test',
+            q:'Quina frase explica el que vas fer el cap de setmana passat?',
+            opts:['Demà aniré a la piscina','Ara estic jugant','Dissabte vaig anar al parc','Cada dia vaig a l\'escola'],
+            ok:2, exp:'"Dissabte vaig anar al parc" és en passat. "Vaig anar" indica passat!' },
+          { type:'order',
+            q:'Ordena l\'explicació del cap de setmana',
+            words:['vaig','El','anar','dissabte','parc','família','al','amb','la'],
+            correct:['El','dissabte','vaig','anar','al','parc','amb','la','família'],
+            exp:'"El dissabte vaig anar al parc amb la família." ' },
+          { type:'fill',
+            q:'Completa el relat',
+            txt:'El cap de setmana ___ anar a la platja. Vam nedar i ___ molt divertit. El diumenge ___ a casa.',
+            blanks:['vam','va ser','vam tornar'],
+            exp:'Usem "vam + infinitiu" per parlar del passat en català!' },
+        ]
+      },
+    ]
+  },
+
+  'lectora': {
+    icon:'📖', color:'#10B981', bg:'#F0FDF4',
+    title:'Comprensió lectora', desc:'Llegeix textos i comprèn el seu significat',
+    acts: [
+      { id:'cl1', title:'Senyals i cartells', desc:'Llegeix indicacions de l\'escola i el carrer',
+        grade:3, level:'new', typeLabel:'Test + Relacionar',
+        qs:[
+          { type:'test',
+            q:'El cartell diu "SORTIDA". Quin és el seu significat?',
+            opts:['Entrada al lloc','Lloc de descans','Lloc per sortir / Exit','Zona de jocs'],
+            ok:2, exp:'"Sortida" en català vol dir "exit" o "salida" en castellà!' },
+          { type:'match',
+            q:'Relaciona cada cartell amb el seu lloc a l\'escola',
+            pairs:[['📚 BIBLIOTECA','Llegir i estudiar'],['🏃 GIMNÀS','Fer esport i educació física'],['🚪 SECRETARIA','Tramitar papers i avisos']],
+            exp:'Ara coneixes les indicacions de l\'escola en català!' },
+          { type:'test',
+            q:'El cartell diu "NO CORRIS". Quin és el missatge?',
+            opts:['Pots córrer lliurement','Correu ràpid per aquí','Queda prohibit córrer','Zona per fer esport'],
+            ok:2, exp:'"No corris" és una prohibició: no et permet córrer per aquí!' },
+        ]
+      },
+      { id:'cl2', title:'Missatges i notes', desc:'Comprèn comunicats breus i notes escolars',
+        grade:3, level:'mid', typeLabel:'Test + Completar',
+        qs:[
+          { type:'test',
+            q:'Llegeixes: "Hola Marta! Demà no hi ha escola. Descansa bé. Fins dilluns!" — Quin tipus de text és?',
+            opts:['Una recepta de cuina','Un missatge breu d\'avís','Una notícia de diari','Un conte infantil'],
+            ok:1, exp:'És un missatge breu que transmet informació a una persona!' },
+          { type:'fill',
+            q:'Respon sobre el missatge: "Avui plou molt. Porta paraigua i jaqueta."',
+            txt:'Avui el temps és ___. Calen dues coses: ___ i ___.',
+            blanks:['dolent / plujós','paraigua','jaqueta'],
+            exp:'Has entès perfectament el missatge i la seva informació important!' },
+          { type:'order',
+            q:'Ordena el missatge correctament',
+            words:['plou','Avui','diu','l\'escola','no','hi','que','ha'],
+            correct:['Avui','l\'escola','diu','que','no','hi','ha','plou'],
+            exp:'El missatge diu que avui no hi ha escola perquè plou!' },
+        ]
+      },
+      { id:'cl3', title:'Contes populars catalans', desc:'Llegeix contes i respon preguntes',
+        grade:4, level:'new', typeLabel:'Test + Ordenar',
+        qs:[
+          { type:'test',
+            q:'El conte comença: "Hi havia una vegada una nina que vivia en un bosc fosc." On vivia la nina?',
+            opts:['A la muntanya','A la ciudad','En un bosc fosc','Al costat del mar'],
+            ok:2, exp:'La frase "vivia en un bosc fosc" ens diu on vivia la nina!' },
+          { type:'test',
+            q:'La frase "Hi havia una vegada..." indica que el text és:',
+            opts:['Una notícia real d\'avui','L\'inici d\'un conte de ficció','Una recepta de cuina','Un missatge d\'avís'],
+            ok:1, exp:'"Hi havia una vegada" és la fórmula clàssica per començar un conte inventat!' },
+          { type:'order',
+            q:'Ordena l\'estructura bàsica d\'un conte',
+            words:['Final feliç 🎉','Problema o aventura 😰','Presentació dels personatges 👶','Resolució del problema ✅'],
+            correct:['Presentació dels personatges 👶','Problema o aventura 😰','Resolució del problema ✅','Final feliç 🎉'],
+            exp:'Tot conte té: presentació → problema → resolució → final!' },
+        ]
+      },
+      { id:'cl4', title:'Descripcions de llocs i persones', desc:'Comprèn i analitza textos descriptius',
+        grade:5, level:'new', typeLabel:'Test + Completar',
+        qs:[
+          { type:'test',
+            q:'Llegeixes: "La noia té els ulls blaus, el cabell ros i és molt alta." Quants adjectius descriu?',
+            opts:['Un','Dos','Tres','Quatre'],
+            ok:2, exp:'"Blaus", "ros" i "alta" són tres adjectius que descriuen la noia!' },
+          { type:'match',
+            q:'Relaciona cada cosa amb la seva descripció',
+            pairs:[['El cel ☁️','Blau, gran i alt'],['La neu ❄️','Blanca, freda i suau'],['El mar 🌊','Blau, salat i profund']],
+            exp:'Cada element de la natura té adjectius que el descriuen bé!' },
+          { type:'fill',
+            q:'Completa la descripció de la classe',
+            txt:'La classe és ___ i lluminosa. Té ___ finestres i una ___ verda on escrivim.',
+            blanks:['gran','moltes','pissarra'],
+            exp:'Una bona descripció usa adjectius precisos i vocabulari específic!' },
+        ]
+      },
+      { id:'cl5', title:'Textos informatius', desc:'Comprèn textos sobre el món i la natura',
+        grade:6, level:'year', typeLabel:'Test + Completar',
+        qs:[
+          { type:'test',
+            q:'Llegeixes: "Catalunya és una comunitat autònoma d\'Espanya. La seva capital és Barcelona i la llengua pròpia és el català." Quina és la capital?',
+            opts:['Madrid','Girona','Barcelona','Lleida'],
+            ok:2, exp:'El text diu clarament: "la seva capital és Barcelona"!' },
+          { type:'fill',
+            q:'Extreu la informació clau del text anterior',
+            txt:'Catalunya és a ___. La seva ___ és Barcelona. La ___ pròpia del país és el català.',
+            blanks:['Espanya','capital','llengua'],
+            exp:'Has identificat perfectament les tres informacions clau del text!' },
+          { type:'test',
+            q:'Un text informatiu és diferent d\'un conte perquè:',
+            opts:['Sempre és molt curt','Parla de fets reals del món','Té personatges inventats','Comença amb "hi havia una vegada"'],
+            ok:1, exp:'Els textos informatius expliquen fets reals, no ficció!' },
+        ]
+      },
+    ]
+  },
+
+  'escrita': {
+    icon:'✍️', color:'#8B5CF6', bg:'#F5F3FF',
+    title:'Expressió escrita', desc:'Aprèn a escriure correctament en català',
+    acts: [
+      { id:'ew1', title:'L\'alfabet i sons especials', desc:'Practica lletres i sons únics del català',
+        grade:3, level:'new', typeLabel:'Test + Relacionar',
+        qs:[
+          { type:'test',
+            q:'Quin so fa la lletra "ç" (ce trencada)?',
+            opts:['Com la "k"','Com la "ss" suau','Com la "x"','Com la "z"'],
+            ok:1, exp:'La ç sona com la "ss" suau! Ex: plaça, força, dolça' },
+          { type:'match',
+            q:'Relaciona cada lletra especial del català amb un exemple',
+            pairs:[['L·L (ela geminada)','col·legi / il·lusió'],['NY','Catalunya / planya'],['Ç (ce trencada)','plaça / dolç']],
+            exp:'Aquestes lletres fan el català únic i cal escriure-les bé!' },
+          { type:'fill',
+            q:'Completa les paraules amb la lletra correcta',
+            txt:'Visquem a Catalu_a i anem al col·le_i de la pla_a.',
+            blanks:['ny','gi','ça'],
+            exp:'"Catalunya", "col·legi" i "plaça" — paraules catalanes molt habituals!' },
+        ]
+      },
+      { id:'ew2', title:'Majúscules i signes de puntuació', desc:'Quan i com usar majúscules i punts',
+        grade:3, level:'mid', typeLabel:'Test + Completar',
+        qs:[
+          { type:'test',
+            q:'En quins casos s\'usa la majúscula?',
+            opts:['Sempre que vulguis per emfatitzar','Al principi de frase i en noms propis','Només per a noms de països','Mai, en català no s\'usa'],
+            ok:1, exp:'Majúscula al principi de frase (.) i en noms propis: Marta, Barcelona, Espanya...' },
+          { type:'test',
+            q:'Quina frase té la puntuació correcta?',
+            opts:['hola em dic laia','Hola, em dic Laia.','Hola Em Dic Laia','hola. em dic laia.'],
+            ok:1, exp:'"Hola, em dic Laia." → Majúscula al principi, coma per separar, punt al final!' },
+          { type:'fill',
+            q:'Reescriu la frase correctament (afegeix majúscules)',
+            txt:'___ dic ___ i vinc de ___. Tinc deu ___.',
+            blanks:['Em','Omar','Síria','anys'],
+            exp:'"Em" (inici de frase) i "Omar", "Síria" (noms propis) porten majúscula!' },
+        ]
+      },
+      { id:'ew3', title:'Construir frases senzilles', desc:'Aprèn l\'ordre de les paraules en català',
+        grade:4, level:'new', typeLabel:'Ordenar + Test',
+        qs:[
+          { type:'order',
+            q:'Forma una frase sobre l\'escola',
+            words:['L\'escola','molt','m\'agrada','aprendre','i'],
+            correct:['L\'escola','m\'agrada','molt','i','aprendre'],
+            exp:'"L\'escola m\'agrada molt i aprendre." Estructura: subjecte + verb + complement!' },
+          { type:'test',
+            q:'Quina frase és gramaticalment correcta en català?',
+            opts:['Jo gusta molt futbol','M\'agrada molt el futbol','Futbol agrada mi molt','Molt m\'agrada jo el futbol'],
+            ok:1, exp:'En català: "M\'agrada + article + substantiu". El verb concorda amb el subjecte!' },
+          { type:'fill',
+            q:'Completa la descripció d\'un amic',
+            txt:'L\'___ es diu Youssef. Té ___ anys i és molt ___. Li ___ jugar a futbol.',
+            blanks:['amic','nou','simpàtic','agrada'],
+            exp:'Molt bé! Ja construeixes frases completes en català!' },
+        ]
+      },
+      { id:'ew4', title:'Descriure llocs i persones', desc:'Escriu textos descriptius elaborats',
+        grade:5, level:'mid', typeLabel:'Completar + Test',
+        qs:[
+          { type:'test',
+            q:'Quina paraula significa "que té molta llum"?',
+            opts:['Fosc','Sorollós','Lluminós','Humit'],
+            ok:2, exp:'"Lluminós" vol dir ple de llum. "Fosc" és el contrari!' },
+          { type:'fill',
+            q:'Completa la descripció de la teva classe',
+            txt:'La meva classe és gran i ___. A més a més, té molts ___. M\'agrada perquè és molt ___.',
+            blanks:['acollidora','materials','animada'],
+            exp:'Una bona descripció usa adjectius variats i connectors com "a més a més"!' },
+          { type:'order',
+            q:'Ordena la descripció d\'un parc',
+            words:['El','gran','és','arbres','molts','parc','i','té'],
+            correct:['El','parc','és','gran','i','té','molts','arbres'],
+            exp:'"El parc és gran i té molts arbres." Estructura descriptiva bàsica!' },
+        ]
+      },
+      { id:'ew5', title:'Escriure una postal', desc:'Aprèn el format i el to d\'una postal',
+        grade:6, level:'new', typeLabel:'Test + Ordenar',
+        qs:[
+          { type:'test',
+            q:'Com comença una postal adreçada a un amic?',
+            opts:['Benvolgut senyor/senyora:','Estimat/da [nom]:','A qui correspongui:','Per ordre de la direcció:'],
+            ok:1, exp:'Per escriure a un amic usem "Estimat/da [nom]:" en to personal i proper!' },
+          { type:'order',
+            q:'Ordena les parts d\'una postal',
+            words:['Un petonàs, Laila 💋','Hola Yasmin! 👋','Aquí fa molt sol i m\'ho passo molt bé.','Fins aviat!','T\'escric des de la platja de Barcelona.'],
+            correct:['Hola Yasmin! 👋','T\'escric des de la platja de Barcelona.','Aquí fa molt sol i m\'ho passo molt bé.','Fins aviat!','Un petonàs, Laila 💋'],
+            exp:'Postal: Salutació → Context (on ets) → Cos del missatge → Comiat → Signatura!' },
+          { type:'fill',
+            q:'Completa la postal',
+            txt:'___ Amir! T\'escric des de ___. Aquí fa ___ i m\'ho passo molt ___. ___ aviat!',
+            blanks:['Estimat','Girona','calor','bé','Fins'],
+            exp:'Perfecte! Ara saps escriure postals en català de manera correcta!' },
+        ]
+      },
+      { id:'ew6', title:'Textos amb connectors', desc:'Escriu textos fluïts amb connectors',
+        grade:6, level:'year', typeLabel:'Test + Completar',
+        qs:[
+          { type:'test',
+            q:'Quin connector s\'usa per afegir informació nova?',
+            opts:['Però','Tot i que','A més a més','Perquè'],
+            ok:2, exp:'"A més a més" afegeix info. "Però" contrasta. "Perquè" explica la causa!' },
+          { type:'match',
+            q:'Relaciona cada connector amb la seva funció',
+            pairs:[['A més a més / També','Afegir informació'],['Però / Tanmateix','Contrastar o oposar'],['Perquè / Ja que','Explicar la causa']],
+            exp:'Els connectors fan els textos més rics i ben organitzats!' },
+          { type:'fill',
+            q:'Completa el text amb els connectors adequats',
+            txt:'M\'agrada molt llegir. ___ a més, m\'agrada escriure contes. ___, de vegades no tinc temps ___ hi ha molt de deures.',
+            blanks:['A','Però','perquè'],
+            exp:'Excel·lent! Fas servir connectors per crear textos coherents i fluïts!' },
+        ]
+      },
+    ]
+  }
+};
+
+/* ════════════════════════════════════════
+   STATE
+════════════════════════════════════════ */
+let ST = {
+  studentCode: null,
+  student: null,
+  currentDim: null,
+  currentActId: null,
+  currentQs: [],
+  qIdx: 0,
+  score: 0,
+  answered: false,
+  matchLeft: null,
+  matchedPairs: [],
+  orderedWords: [],
+  availWords: [],
+  fillAnswers: [],
+  chosenIdx: null,
+};
+
+/* ════════════════════════════════════════
+   PERSISTENCE (per-student)
+════════════════════════════════════════ */
+function loadProgress(code) {
+  try {
+    const d = localStorage.getItem('catala_' + code);
+    return d ? JSON.parse(d) : {};
+  } catch(e) { return {}; }
+}
+function saveProgress() {
+  if (!ST.studentCode) return;
+  try {
+    localStorage.setItem('catala_' + ST.studentCode, JSON.stringify(ST.progress));
+  } catch(e) {}
+}
+
+/* ════════════════════════════════════════
+   LOGIN
+════════════════════════════════════════ */
+function buildDemoGrid() {
+  const grid = document.getElementById('demo-grid');
+  grid.innerHTML = '';
+  Object.entries(STUDENTS).forEach(([code, s]) => {
+    const el = document.createElement('div');
+    el.className = 'demo-code';
+    el.innerHTML = `<span class="dc-code">${code}</span><span class="dc-info">${s.gradeLabel} · ${s.levelLabel}</span>`;
+    el.onclick = () => { document.getElementById('code-input').value = code; onCodeInput(document.getElementById('code-input')); doLogin(); };
+    grid.appendChild(el);
+  });
+}
+
+function init() {
+  STUDENTS = loadStudents();
+  buildDemoGrid();
+  // Auto-restore session
+  try {
+    const last = localStorage.getItem('catala_last_code');
+    if (last && STUDENTS[last]) {
+      document.getElementById('code-input').value = last;
+      doLogin(true);
+    }
+  } catch(e) {}
+}
+
+function onCodeInput(inp) {
+  inp.value = inp.value.toUpperCase().replace(/[^A-ZÀÈÉÍÏÒÓÚÜ]/g,'');
+  document.getElementById('error-msg').textContent = '';
+  inp.classList.remove('error');
+  document.getElementById('btn-entrar').disabled = inp.value.length < 2;
+}
+
+function doLogin(silent) {
+  const code = document.getElementById('code-input').value.trim().toUpperCase();
+  const student = STUDENTS[code];
+  if (!student) {
+    if (!silent) {
+      const inp = document.getElementById('code-input');
+      inp.classList.add('error');
+      document.getElementById('error-msg').textContent = '❌ Codi no reconegut. Demana\'l al teu mestre/a.';
+      setTimeout(()=>{ inp.classList.remove('error'); }, 600);
+    }
+    return;
+  }
+  ST.studentCode = code;
+  ST.student = student;
+  ST.progress = loadProgress(code);
+  try { localStorage.setItem('catala_last_code', code); } catch(e) {}
+  document.getElementById('app-header').style.display = 'flex';
+  document.getElementById('pill-text').textContent = `${student.name} · ${student.gradeLabel}`;
+  goTo('screen-dashboard');
+  updateDash();
+}
+
+function logout() {
+  ST.studentCode = null; ST.student = null; ST.progress = {};
+  document.getElementById('app-header').style.display = 'none';
+  document.getElementById('code-input').value = '';
+  document.getElementById('btn-entrar').disabled = true;
+  goTo('screen-login');
+}
+
+/* ════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════ */
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function getActs(dim) {
+  const all = DB[dim].acts;
+  const g = ST.student.grade;
+  const l = ST.student.level;
+  return all.filter(a => {
+    if (a.grade > g) return false;
+    if (a.grade < g) return l !== 'new';
+    // same grade
+    if (l === 'new') return a.level === 'new';
+    if (l === 'mid') return a.level !== 'year' || a.grade < g;
+    return true;
+  });
+}
+
+/* ════════════════════════════════════════
+   DASHBOARD
+════════════════════════════════════════ */
+const TIMES = ['bon dia','bon dia','bon dia','bon dia','bon dia','bon dia','bon dia','bon dia','bon dia','bon dia','bon dia','bon dia','bona tarda','bona tarda','bona tarda','bona tarda','bona tarda','bona tarda','bona tarda','bona vesprada','bona vesprada','bona nit','bona nit','bona nit'];
+
+function updateDash() {
+  const h = new Date().getHours();
+  const greet = TIMES[h];
+  document.getElementById('dash-greeting').textContent = `${greet.charAt(0).toUpperCase()+greet.slice(1)}, ${ST.student.name}!`;
+  document.getElementById('dash-sub').textContent = `${ST.student.gradeLabel} de Primària · ${ST.student.levelLabel}`;
+  let tot=0, done=0;
+  for (const dim of ['oral-c','oral-e','lectora','escrita']) {
+    const acts = getActs(dim);
+    const d = acts.filter(a => ST.progress[a.id] !== undefined).length;
+    tot += acts.length; done += d;
+    const pct = acts.length ? (d/acts.length)*100 : 0;
+    document.getElementById('dp-'+dim).style.width = pct+'%';
+    document.getElementById('dl-'+dim).textContent = `${d} / ${acts.length} activitats`;
+  }
+  document.getElementById('stat-done').textContent = done;
+  document.getElementById('stat-total').textContent = tot;
+  document.getElementById('stat-pct').textContent = tot ? Math.round(done/tot*100)+'%' : '0%';
+}
+
+/* ════════════════════════════════════════
+   ACTIVITY LIST
+════════════════════════════════════════ */
+function openDim(dim) {
+  ST.currentDim = dim;
+  const info = DB[dim];
+  const med = document.getElementById('dim-icon-med');
+  med.textContent = info.icon;
+  med.style.background = info.bg;
+  document.getElementById('dim-title-acts').textContent = info.title;
+  document.getElementById('dim-desc-acts').textContent = info.desc;
+
+  const acts = getActs(dim);
+  const list = document.getElementById('act-list');
+  list.innerHTML = '';
+
+  if (!acts.length) {
+    list.innerHTML = `<div style="text-align:center;padding:40px;color:#9CA3AF">
+      <div style="font-size:3rem">🔒</div>
+      <p style="font-weight:800;margin-top:8px">Cap activitat disponible per al teu nivell</p>
+      <p style="font-size:.82rem;margin-top:4px">Continua aprenent català!</p>
+    </div>`;
+    goTo('screen-activities');
+    return;
+  }
+
+  acts.forEach((act, i) => {
+    const isDone = ST.progress[act.id] !== undefined;
+    const sc = ST.progress[act.id];
+    const item = document.createElement('div');
+    item.className = 'act-item' + (isDone ? ' done' : '');
+    item.style.borderLeftColor = info.color;
+    item.innerHTML = `
+      <div class="act-num" style="background:${info.bg};color:${info.color}">${i+1}</div>
+      <div class="act-body">
+        <h4>${act.title}</h4>
+        <p>${act.desc}</p>
+      </div>
+      <div class="act-right">
+        <span class="type-tag">${act.typeLabel}</span>
+        ${isDone ? `<span class="done-score" style="color:${info.color}">${sc}/${act.qs.length} ✅</span>` : '<span style="font-size:1.2rem">▶️</span>'}
+      </div>
+    `;
+    item.onclick = () => startAct(act.id);
+    list.appendChild(item);
+  });
+
+  goTo('screen-activities');
+}
+
+/* ════════════════════════════════════════
+   EXERCISE ENGINE
+════════════════════════════════════════ */
+function startAct(actId) {
+  const dim = ST.currentDim;
+  const act = DB[dim].acts.find(a => a.id === actId);
+  ST.currentActId = actId;
+  ST.currentQs = [...act.qs];
+  ST.qIdx = 0; ST.score = 0;
+  goTo('screen-exercise');
+  renderQ();
+}
+
+function renderQ() {
+  const q = ST.currentQs[ST.qIdx];
+  const tot = ST.currentQs.length;
+  const dim = ST.currentDim;
+  const col = DB[dim].color;
+
+  document.getElementById('ex-prog').style.width = (ST.qIdx/tot*100)+'%';
+  document.getElementById('ex-prog').style.background = col;
+  document.getElementById('ex-step').textContent = `${ST.qIdx+1} / ${tot}`;
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('btn-check').style.display = 'block';
+  document.getElementById('btn-check').disabled = true;
+  document.getElementById('btn-next').className = 'btn-next';
+  ST.answered = false; ST.matchLeft = null; ST.matchedPairs = [];
+  ST.chosenIdx = null; ST.orderedWords = []; ST.fillAnswers = [];
+
+  const card = document.getElementById('ex-card');
+  const typeLabels = { test:'🔵 Tria la resposta', 'audio-test':'🎧 Escolta i respon', match:'🟠 Relaciona', order:'🟢 Ordena les paraules', fill:'🟣 Completa la frase' };
+
+  let html = `<div class="q-type-badge">${typeLabels[q.type]||q.type}</div>`;
+
+  if (q.audio) {
+    const wbars = Array(14).fill(0).map((_,i)=>`<div class="wbar" style="height:${6+Math.random()*18}px;animation-delay:${i*.04}s"></div>`).join('');
+    html += `<div class="audio-player" onclick="speakText(this)" data-txt="${q.audio.replace(/"/g,'&quot;')}">
+      <div class="play-btn-wrap">▶️</div>
+      <div class="audio-txt"><strong>Escolta l'àudio</strong><span>Clica per reproduir</span></div>
+      <div class="wave">${wbars}</div>
+    </div>`;
+  }
+  html += `<div class="q-text">${q.q}</div>`;
+
+  if (q.type === 'test' || q.type === 'audio-test') {
+    html += `<div class="test-opts">`;
+    ['A','B','C','D'].slice(0,q.opts.length).forEach((l,i) => {
+      html += `<button class="test-opt" data-idx="${i}" onclick="pickTest(this,${i})">`+
+        `<span class="opt-letter">${l}</span>${q.opts[i]}</button>`;
+    });
+    html += `</div>`;
+  }
+  else if (q.type === 'match') {
+    const shuffledRight = [...q.pairs.map((p,i)=>({txt:p[1],oi:i}))].sort(()=>Math.random()-.5);
+    html += `<div class="match-wrap">
+      <div class="match-col"><div class="match-col-hd">Col·lumna A</div>`;
+    q.pairs.forEach((p,i) => { html += `<div class="match-item" data-idx="${i}" onclick="pickMatch(this,'L',${i})">${p[0]}</div>`; });
+    html += `</div><div class="match-col"><div class="match-col-hd">Col·lumna B</div>`;
+    shuffledRight.forEach(r => { html += `<div class="match-item" data-oi="${r.oi}" onclick="pickMatch(this,'R',${r.oi})">${r.txt}</div>`; });
+    html += `</div></div>`;
+  }
+  else if (q.type === 'order') {
+    ST.availWords = [...q.words].sort(()=>Math.random()-.5);
+    html += `<div class="order-wrap">
+      <div class="order-lbl">La teva frase:</div>
+      <div class="order-drop" id="order-drop"></div>
+      <div class="order-lbl">Paraules disponibles:</div>
+      <div class="word-bank-wrap" id="word-bank"></div>
+    </div>`;
+  }
+  else if (q.type === 'fill') {
+    const parts = q.txt.split('___');
+    ST.fillAnswers = new Array(q.blanks.length).fill('');
+    html += `<div class="fill-wrap"><div class="fill-txt">`;
+    parts.forEach((p,i) => {
+      html += p;
+      if (i < parts.length-1) html += `<input class="fill-inp" id="fi${i}" placeholder="..." oninput="updateFill(${i},this.value)">`;
+    });
+    html += `</div></div>`;
+  }
+
+  card.innerHTML = html;
+  if (q.type === 'order') renderOrderUI();
+}
+
+/* — Audio — */
+function speakText(el) {
+  const txt = el.dataset.txt;
+  const bars = el.querySelectorAll('.wbar');
+  bars.forEach(b=>b.classList.add('active'));
+  if ('speechSynthesis' in window) {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(txt);
+    u.lang = 'ca-ES'; u.rate = .85;
+    u.onend = ()=>bars.forEach(b=>b.classList.remove('active'));
+    speechSynthesis.speak(u);
+  } else {
+    setTimeout(()=>bars.forEach(b=>b.classList.remove('active')), 2200);
+  }
+}
+
+/* — Test — */
+function pickTest(btn, idx) {
+  if (ST.answered) return;
+  document.querySelectorAll('.test-opt').forEach(b=>{ b.classList.remove('chosen'); b.style.borderColor=''; });
+  btn.classList.add('chosen');
+  ST.chosenIdx = idx;
+  document.getElementById('btn-check').disabled = false;
+}
+
+/* — Match — */
+function pickMatch(el, side, idx) {
+  if (ST.answered || el.classList.contains('matched')) return;
+  const q = ST.currentQs[ST.qIdx];
+  if (side === 'L') {
+    document.querySelectorAll('.match-col:first-child .match-item').forEach(e=>e.classList.remove('sel-left'));
+    el.classList.add('sel-left');
+    ST.matchLeft = idx;
+  } else {
+    if (ST.matchLeft === null) return;
+    if (ST.matchLeft === idx) {
+      // Correct pair
+      document.querySelectorAll('.match-col:first-child .match-item').forEach(e=>{ if(parseInt(e.dataset.idx)===ST.matchLeft) e.classList.add('matched'); });
+      el.classList.add('matched');
+      ST.matchedPairs.push(idx);
+      ST.matchLeft = null;
+      document.querySelectorAll('.match-col:first-child .match-item').forEach(e=>e.classList.remove('sel-left'));
+      if (ST.matchedPairs.length === q.pairs.length) {
+        ST.answered = true; ST.score++;
+        showFeedback(true, q.exp);
+        document.getElementById('btn-check').style.display = 'none';
+        document.getElementById('btn-next').className = 'btn-next show';
+      }
+    } else {
+      el.classList.add('bad');
+      setTimeout(()=>el.classList.remove('bad'),400);
+      ST.matchLeft = null;
+      document.querySelectorAll('.match-col:first-child .match-item').forEach(e=>e.classList.remove('sel-left'));
+    }
+  }
+}
+
+/* — Order — */
+function renderOrderUI() {
+  const drop = document.getElementById('order-drop');
+  const bank = document.getElementById('word-bank');
+  if (!drop||!bank) return;
+  drop.className = 'order-drop'+(ST.orderedWords.length?' populated':'');
+  drop.innerHTML = ST.orderedWords.map((w,i)=>`<button class="word-chip in-drop" onclick="removeWord(${i})">${w}</button>`).join('');
+  bank.innerHTML = ST.availWords.map((w,i)=>`<button class="word-chip" onclick="addWord(${i})">${w}</button>`).join('');
+  document.getElementById('btn-check').disabled = ST.orderedWords.length === 0;
+}
+function addWord(i) {
+  if (ST.answered) return;
+  ST.orderedWords.push(ST.availWords.splice(i,1)[0]);
+  renderOrderUI();
+}
+function removeWord(i) {
+  if (ST.answered) return;
+  ST.availWords.push(ST.orderedWords.splice(i,1)[0]);
+  renderOrderUI();
+}
+
+/* — Fill — */
+function updateFill(i, v) {
+  ST.fillAnswers[i] = v.trim();
+  document.getElementById('btn-check').disabled = ST.fillAnswers.some(a=>!a.length);
+}
+
+/* ════════════════════════════════════════
+   CHECK & NEXT
+════════════════════════════════════════ */
+function checkAns() {
+  if (ST.answered) return;
+  const q = ST.currentQs[ST.qIdx];
+  let correct = false;
+
+  if (q.type === 'test' || q.type === 'audio-test') {
+    correct = ST.chosenIdx === q.ok;
+    document.querySelectorAll('.test-opt').forEach((b,i) => {
+      b.disabled = true; b.classList.remove('chosen');
+      if (i === q.ok) b.classList.add('correct');
+      else if (i === ST.chosenIdx && !correct) b.classList.add('wrong');
+    });
+  }
+  else if (q.type === 'order') {
+    const user = ST.orderedWords.join(' ').toLowerCase();
+    const cor = q.correct.join(' ').toLowerCase();
+    correct = user === cor;
+    document.querySelectorAll('.word-chip.in-drop').forEach(c => c.classList.add(correct?'ok-chip':'ko-chip'));
+    if (!correct) {
+      const drop = document.getElementById('order-drop');
+      if (drop) drop.innerHTML += `<div class="correct-sentence-hint">✅ Correcte: ${q.correct.join(' ')}</div>`;
+    }
+  }
+  else if (q.type === 'fill') {
+    const res = q.blanks.map((b,i) => ST.fillAnswers[i].toLowerCase().replace(/[.,!?]/g,'').trim() === b.toLowerCase().replace(/[.,!?]/g,'').trim());
+    correct = res.every(Boolean);
+    res.forEach((ok,i) => {
+      const inp = document.getElementById(`fi${i}`);
+      if (inp) { inp.classList.add(ok?'ok-inp':'ko-inp'); inp.disabled = true; if(!ok) inp.value = q.blanks[i]; }
+    });
+  }
+
+  if (correct) ST.score++;
+  ST.answered = true;
+  showFeedback(correct, q.exp);
+  document.getElementById('btn-check').style.display = 'none';
+  document.getElementById('btn-next').className = 'btn-next show';
+}
+
+function showFeedback(ok, msg) {
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback show ' + (ok?'ok':'ko');
+  document.getElementById('fb-icon').textContent = ok?'🎉':'💡';
+  document.getElementById('fb-title').textContent = ok?'Molt bé!':'Quasi!';
+  document.getElementById('fb-msg').textContent = msg || '';
+}
+
+function nextQ() {
+  ST.qIdx++;
+  if (ST.qIdx >= ST.currentQs.length) finishAct();
+  else renderQ();
+}
+
+function finishAct() {
+  const tot = ST.currentQs.length;
+  const ok = ST.score;
+  ST.progress[ST.currentActId] = ok;
+  saveProgress();
+  updateDash();
+
+  const pct = ok/tot;
+  let emoji, title, msg, stars;
+  if (pct === 1)      { emoji='🏆'; title='Excel·lent!'; msg='Has encertat totes les preguntes. Ets increïble!'; stars=3; }
+  else if (pct>=.66)  { emoji='😄'; title='Molt bé!'; msg='Has encertat la majoria. Continua practicant i ho aconseguiràs!'; stars=2; }
+  else if (pct>=.33)  { emoji='😊'; title='Bé!'; msg='Vas aprenent poc a poc. Torna-ho a intentar per millorar!'; stars=1; }
+  else                { emoji='🌱'; title='Continua!'; msg='Cada intent t\'ajuda a aprendre. No et rendeixis, ho aconseguiràs!'; stars=0; }
+
+  document.getElementById('res-emoji').textContent = emoji;
+  document.getElementById('res-title').textContent = title;
+  document.getElementById('res-ok').textContent = ok;
+  document.getElementById('res-tot').textContent = tot;
+  document.getElementById('res-msg').textContent = msg;
+  ['s1','s2','s3'].forEach((id,i) => {
+    const el = document.getElementById(id);
+    el.textContent = i<stars?'⭐':'☆';
+    el.style.animation = 'none'; el.style.opacity = '0';
+    setTimeout(()=>{ el.style.animation = ''; }, 10);
+  });
+  goTo('screen-results');
+}
+
+/* ════════════════════════════════════════
+   ADMIN SYSTEM
+════════════════════════════════════════ */
+const ADMIN_CREDS = { user: 'mestre', pass: 'catala2024' };
+
+function clearAdminErr() {
+  document.getElementById('admin-err').textContent = '';
+  document.getElementById('admin-user').classList.remove('err');
+  document.getElementById('admin-pass').classList.remove('err');
+}
+
+function tryAdminLogin() {
+  const u = document.getElementById('admin-user').value.trim().toLowerCase();
+  const p = document.getElementById('admin-pass').value.trim();
+  if (u === ADMIN_CREDS.user && p === ADMIN_CREDS.pass) {
+    document.getElementById('admin-login-view').style.display = 'none';
+    document.getElementById('admin-panel-view').style.display = 'block';
+    renderAdminPanel();
+  } else {
+    document.getElementById('admin-err').textContent = '❌ Usuari o contrasenya incorrectes';
+    document.getElementById('admin-user').classList.add('err');
+    document.getElementById('admin-pass').classList.add('err');
+    setTimeout(clearAdminErr, 1500);
+  }
+}
+
+function adminLogout() {
+  document.getElementById('admin-user').value = '';
+  document.getElementById('admin-pass').value = '';
+  document.getElementById('admin-login-view').style.display = 'flex';
+  document.getElementById('admin-panel-view').style.display = 'none';
+  closeAdminDim();
+  goTo('screen-login');
+}
+
+// When navigating to admin screen, always show login first (unless already in panel)
+function goToAdmin() {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-admin').classList.add('active');
+  window.scrollTo(0,0);
+  const panelVisible = document.getElementById('admin-panel-view').style.display === 'block';
+  if (!panelVisible) {
+    document.getElementById('admin-login-view').style.display = 'flex';
+  }
+}
+
+function renderAdminPanel() {
+  // — Summary stats —
+  const allCodes = Object.keys(STUDENTS);
+  let totalStudents = allCodes.length;
+  let activeStudents = 0;
+  let totalActivities = 0;
+  let totalDone = 0;
+
+  allCodes.forEach(code => {
+    const prog = loadProgress(code);
+    const hasDone = Object.keys(prog).length > 0;
+    if (hasDone) activeStudents++;
+    const stu = STUDENTS[code];
+    // Compute total activities for this student
+    for (const dim of ['oral-c','oral-e','lectora','escrita']) {
+      const acts = getActsForStudent(dim, stu);
+      totalActivities += acts.length;
+      totalDone += acts.filter(a => prog[a.id] !== undefined).length;
+    }
+  });
+
+  const sumEl = document.getElementById('admin-summary');
+  sumEl.innerHTML = `
+    <div class="sum-card"><span class="sv">${totalStudents}</span><span class="sl">Alumnes registrats</span></div>
+    <div class="sum-card"><span class="sv">${activeStudents}</span><span class="sl">Han practicat</span></div>
+    <div class="sum-card"><span class="sv">${totalDone}</span><span class="sl">Activitats fetes</span></div>
+    <div class="sum-card"><span class="sv">${totalActivities > 0 ? Math.round(totalDone/totalActivities*100) : 0}%</span><span class="sl">Progrés global</span></div>
+  `;
+
+  // — Dimension button stats —
+  for (const dim of ['oral-c','oral-e','lectora','escrita']) {
+    let dimDone = 0, dimTotal = 0;
+    allCodes.forEach(code => {
+      const prog = loadProgress(code);
+      const stu = STUDENTS[code];
+      const acts = getActsForStudent(dim, stu);
+      dimTotal += acts.length;
+      dimDone += acts.filter(a => prog[a.id] !== undefined).length;
+    });
+    const statsEl = document.getElementById('adb-stats-' + dim);
+    if (statsEl) {
+      statsEl.innerHTML = `
+        <span class="adb-stat">${dimDone} / ${dimTotal} fetes</span>
+        <span class="adb-stat">${dimTotal > 0 ? Math.round(dimDone/dimTotal*100) : 0}%</span>
+      `;
+    }
+  }
+
+  // Students grid
+  renderStudentsGrid();
+}
+
+function getActsForStudent(dim, stu) {
+  const all = DB[dim].acts;
+  const g = stu.grade;
+  const l = stu.level;
+  return all.filter(a => {
+    if (a.grade > g) return false;
+    if (a.grade < g) return l !== 'new';
+    if (l === 'new') return a.level === 'new';
+    if (l === 'mid') return a.level !== 'year' || a.grade < g;
+    return true;
+  });
+}
+
+function openAdminDim(dim) {
+  const info = DB[dim];
+  const detail = document.getElementById('admin-dim-detail');
+  detail.classList.add('open');
+  detail.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Header
+  document.getElementById('admin-dim-header').innerHTML = `
+    <div class="dim-ic" style="background:${info.bg}">${info.icon}</div>
+    <div>
+      <h3 style="color:${info.color}">${info.title}</h3>
+      <p>${info.desc}</p>
+    </div>
+  `;
+
+  // Build table: columns = activities (for each student's visible acts)
+  // First, gather all unique activity ids visible to at least one student
+  const allActIds = new Set();
+  const allActMeta = {};
+  Object.values(STUDENTS).forEach(stu => {
+    getActsForStudent(dim, stu).forEach(a => {
+      allActIds.add(a.id);
+      allActMeta[a.id] = a;
+    });
+  });
+  const actIds = [...allActIds];
+
+  // Table head
+  const thead = document.getElementById('admin-table-head');
+  thead.innerHTML = `<tr>
+    <th>Alumne</th>
+    <th>Curs</th>
+    <th>Nivell</th>
+    <th>Progrés</th>
+    ${actIds.map(id => `<th style="min-width:90px">${allActMeta[id].title}</th>`).join('')}
+  </tr>`;
+
+  // Table body
+  const tbody = document.getElementById('admin-table-body');
+  const rows = Object.entries(STUDENTS).map(([code, stu]) => {
+    const prog = loadProgress(code);
+    const visibleActs = getActsForStudent(dim, stu);
+    const done = visibleActs.filter(a => prog[a.id] !== undefined).length;
+    const tot = visibleActs.length;
+    const pct = tot > 0 ? Math.round(done/tot*100) : 0;
+
+    const actCells = actIds.map(id => {
+      const isVisible = visibleActs.find(a => a.id === id);
+      if (!isVisible) return `<td style="text-align:center;color:#D1D5DB">—</td>`;
+      const score = prog[id];
+      const maxScore = allActMeta[id].qs.length;
+      if (score === undefined) return `<td><span class="act-score-pill todo-pill">Pendent</span></td>`;
+      const col = score === maxScore ? '#065F46' : score >= maxScore/2 ? info.color : '#DC2626';
+      return `<td><span class="act-score-pill done-pill" style="color:${col};border-color:transparent">${score}/${maxScore} ✅</span></td>`;
+    }).join('');
+
+    return `<tr>
+      <td class="student-name-cell">${stu.name} <span class="grade-chip">${code}</span></td>
+      <td>${stu.gradeLabel}</td>
+      <td><span class="level-chip">${stu.levelLabel}</span></td>
+      <td class="act-progress-cell">
+        <div class="mini-prog-track"><div class="mini-prog-fill" style="width:${pct}%;background:${info.color}"></div></div>
+        <strong style="font-size:.82rem;color:${info.color}">${done}/${tot}</strong>
+      </td>
+      ${actCells}
+    </tr>`;
+  }).join('');
+
+  tbody.innerHTML = rows || `<tr class="no-data-row"><td colspan="${4+actIds.length}">Cap alumne registrat</td></tr>`;
+}
+
+function closeAdminDim() {
+  document.getElementById('admin-dim-detail').classList.remove('open');
+}
+
+/* ════════════════════════════════════════
+   STUDENT MANAGEMENT
+════════════════════════════════════════ */
+let _editingCode = null;
+
+function generateCode() {
+  const letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; // sense I, O per evitar confusions
+  let code, attempts = 0;
+  do {
+    code = Array.from({length:4}, () => letters[Math.floor(Math.random()*letters.length)]).join('');
+    attempts++;
+  } while (STUDENTS[code] && attempts < 100);
+  document.getElementById('modal-code').value = code;
+  document.getElementById('modal-err').textContent = '';
+}
+
+function openStudentModal(editCode) {
+  _editingCode = editCode || null;
+  const modal = document.getElementById('student-modal');
+  document.getElementById('modal-err').textContent = '';
+
+  if (editCode) {
+    const s = STUDENTS[editCode];
+    document.getElementById('modal-title-text').textContent = 'Editar alumne';
+    document.getElementById('modal-icon').textContent = '✏️';
+    document.getElementById('modal-code').value = editCode;
+    document.getElementById('modal-code').readOnly = true;
+    document.getElementById('modal-nom').value = s.name || '';
+    document.getElementById('modal-cognom').value = s.surname || '';
+    document.getElementById('modal-curs').value = s.grade || 3;
+    document.getElementById('modal-grup').value = s.grup || '';
+    document.getElementById('modal-nivell').value = s.level || 'new';
+    document.getElementById('modal-data').value = s.dataIncorp || '';
+    document.getElementById('modal-llengua').value = s.llengua || '';
+  } else {
+    document.getElementById('modal-title-text').textContent = 'Nou alumne';
+    document.getElementById('modal-icon').textContent = '👤';
+    document.getElementById('modal-code').readOnly = false;
+    document.getElementById('modal-code').value = '';
+    document.getElementById('modal-nom').value = '';
+    document.getElementById('modal-cognom').value = '';
+    document.getElementById('modal-curs').value = 3;
+    document.getElementById('modal-grup').value = '';
+    document.getElementById('modal-nivell').value = 'new';
+    document.getElementById('modal-data').value = '';
+    document.getElementById('modal-llengua').value = '';
+    generateCode();
+  }
+  modal.classList.add('open');
+  setTimeout(() => document.getElementById('modal-nom').focus(), 150);
+}
+
+function closeStudentModal() {
+  document.getElementById('student-modal').classList.remove('open');
+  _editingCode = null;
+}
+
+function saveStudent() {
+  const code = document.getElementById('modal-code').value.trim().toUpperCase();
+  const nom = document.getElementById('modal-nom').value.trim();
+  const cognom = document.getElementById('modal-cognom').value.trim();
+  const grade = parseInt(document.getElementById('modal-curs').value);
+  const grup = document.getElementById('modal-grup').value.trim();
+  const level = document.getElementById('modal-nivell').value;
+  const dataIncorp = document.getElementById('modal-data').value;
+  const llengua = document.getElementById('modal-llengua').value.trim();
+  const errEl = document.getElementById('modal-err');
+
+  if (code.length < 2) { errEl.textContent = '❌ El codi ha de tenir almenys 2 lletres'; return; }
+  if (!nom) { errEl.textContent = '❌ Cal indicar el nom de l\'alumne'; return; }
+  if (!_editingCode && STUDENTS[code]) { errEl.textContent = '❌ Aquest codi ja existeix. Genera\'n un altre!'; return; }
+
+  STUDENTS[code] = {
+    name: nom,
+    surname: cognom,
+    grade: grade,
+    level: level,
+    grup: grup,
+    dataIncorp: dataIncorp,
+    llengua: llengua,
+    gradeLabel: GRADE_LABELS[grade],
+    levelLabel: LEVEL_LABELS[level],
+  };
+  saveStudents(STUDENTS);
+  closeStudentModal();
+  renderStudentsGrid();
+  renderAdminPanel();
+  buildDemoGrid();
+}
+
+function deleteStudent(code) {
+  if (!confirm(`Segur que vols eliminar l'alumne amb codi "${code}"? Es perdran les dades de progrés.`)) return;
+  delete STUDENTS[code];
+  try { localStorage.removeItem('catala_' + code); } catch(e) {}
+  saveStudents(STUDENTS);
+  renderStudentsGrid();
+  renderAdminPanel();
+  buildDemoGrid();
+}
+
+function renderStudentsGrid() {
+  const grid = document.getElementById('students-grid');
+  const countLabel = document.getElementById('students-count-label');
+  const keys = Object.keys(STUDENTS);
+  countLabel.textContent = keys.length + ' alumne' + (keys.length !== 1 ? 's' : '') + ' registrat' + (keys.length !== 1 ? 's' : '');
+
+  if (!keys.length) {
+    grid.innerHTML = `<div class="empty-students" style="grid-column:1/-1">
+      <span class="es-icon">👥</span>
+      <p>Encara no hi ha alumnes. Afegeix-ne el primer!</p>
+    </div>`;
+    return;
+  }
+
+  // Color per curs
+  const cursColors = { 3:'#3B82F6', 4:'#F97316', 5:'#8B5CF6', 6:'#10B981' };
+
+  grid.innerHTML = keys.map(code => {
+    const s = STUDENTS[code];
+    const prog = loadProgress(code);
+    let totalActs = 0, donActs = 0;
+    for (const dim of ['oral-c','oral-e','lectora','escrita']) {
+      const acts = getActsForStudent(dim, s);
+      totalActs += acts.length;
+      donActs += acts.filter(a => prog[a.id] !== undefined).length;
+    }
+    const pct = totalActs > 0 ? Math.round(donActs / totalActs * 100) : 0;
+    const color = cursColors[s.grade] || '#3B82F6';
+    const fullName = s.name + (s.surname ? ' ' + s.surname : '');
+    const extras = [s.grup ? 'Grup ' + s.grup : '', s.llengua ? s.llengua : '', s.dataIncorp ? 'Incorporació: ' + s.dataIncorp : ''].filter(Boolean);
+
+    return `<div class="student-card">
+      <div class="student-card-header">
+        <span class="student-card-code" style="color:${color};background:${color}18">${code}</span>
+        <div class="student-card-actions">
+          <button class="btn-icon edit" onclick="openStudentModal('${code}')" title="Editar">✏️</button>
+          <button class="btn-icon" onclick="deleteStudent('${code}')" title="Eliminar">🗑️</button>
+        </div>
+      </div>
+      <div class="student-card-name">${fullName}</div>
+      <div class="student-card-meta">
+        <span class="meta-chip curs">${s.gradeLabel}</span>
+        <span class="meta-chip nivell">${s.levelLabel}</span>
+        ${extras.map(e => `<span class="meta-chip">${e}</span>`).join('')}
+      </div>
+      <div class="student-prog-bar">
+        <div class="student-prog-fill" style="width:${pct}%;background:${color}"></div>
+      </div>
+      <div class="student-prog-label">${donActs}/${totalActs} activitats · ${pct}%</div>
+    </div>`;
+  }).join('');
+}
+
+// Close modal on backdrop click
+document.getElementById('student-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeStudentModal();
+});
+
+/* ════════════════════════════════════════
+   VOCABULARY MODULE
+════════════════════════════════════════ */
+const VOCAB_TOPICS = [
+  { id:'dies', name:'Dies de la setmana', icon:'📅', color:'#3B82F6',
+    words:[
+      {ca:'dilluns',es:'lunes',en:'Monday',emoji:'📅'},
+      {ca:'dimarts',es:'martes',en:'Tuesday',emoji:'📅'},
+      {ca:'dimecres',es:'miércoles',en:'Wednesday',emoji:'📅'},
+      {ca:'dijous',es:'jueves',en:'Thursday',emoji:'📅'},
+      {ca:'divendres',es:'viernes',en:'Friday',emoji:'🎉'},
+      {ca:'dissabte',es:'sábado',en:'Saturday',emoji:'😴'},
+      {ca:'diumenge',es:'domingo',en:'Sunday',emoji:'☀️'},
+    ]
+  },
+  { id:'mesos', name:'Mesos de l\'any', icon:'🗓️', color:'#8B5CF6',
+    words:[
+      {ca:'gener',es:'enero',emoji:'❄️'},{ca:'febrer',es:'febrero',emoji:'💕'},
+      {ca:'març',es:'marzo',emoji:'🌸'},{ca:'abril',es:'abril',emoji:'🌧️'},
+      {ca:'maig',es:'mayo',emoji:'🌼'},{ca:'juny',es:'junio',emoji:'☀️'},
+      {ca:'juliol',es:'julio',emoji:'🏖️'},{ca:'agost',es:'agosto',emoji:'🌊'},
+      {ca:'setembre',es:'septiembre',emoji:'🍂'},{ca:'octubre',es:'octubre',emoji:'🎃'},
+      {ca:'novembre',es:'noviembre',emoji:'🍁'},{ca:'desembre',es:'diciembre',emoji:'🎄'},
+    ]
+  },
+  { id:'estacions', name:'Estacions de l\'any', icon:'🌍', color:'#10B981',
+    words:[
+      {ca:'la primavera',es:'la primavera',emoji:'🌸'},
+      {ca:'l\'estiu',es:'el verano',emoji:'☀️'},
+      {ca:'la tardor',es:'el otoño',emoji:'🍂'},
+      {ca:'l\'hivern',es:'el invierno',emoji:'❄️'},
+    ]
+  },
+  { id:'numeros', name:'Números del 0 al 100', icon:'🔢', color:'#F97316',
+    words:[
+      {ca:'zero',es:'cero',emoji:'0️⃣'},{ca:'un / una',es:'uno / una',emoji:'1️⃣'},
+      {ca:'dos / dues',es:'dos',emoji:'2️⃣'},{ca:'tres',es:'tres',emoji:'3️⃣'},
+      {ca:'quatre',es:'cuatro',emoji:'4️⃣'},{ca:'cinc',es:'cinco',emoji:'5️⃣'},
+      {ca:'sis',es:'seis',emoji:'6️⃣'},{ca:'set',es:'siete',emoji:'7️⃣'},
+      {ca:'vuit',es:'ocho',emoji:'8️⃣'},{ca:'nou',es:'nueve',emoji:'9️⃣'},
+      {ca:'deu',es:'diez',emoji:'🔟'},{ca:'onze',es:'once',emoji:'1️⃣1️⃣'},
+      {ca:'dotze',es:'doce',emoji:'1️⃣2️⃣'},{ca:'tretze',es:'trece',emoji:'1️⃣3️⃣'},
+      {ca:'catorze',es:'catorce',emoji:'1️⃣4️⃣'},{ca:'quinze',es:'quince',emoji:'1️⃣5️⃣'},
+      {ca:'setze',es:'dieciséis',emoji:'✨'},{ca:'disset',es:'diecisiete',emoji:'✨'},
+      {ca:'divuit',es:'dieciocho',emoji:'✨'},{ca:'dinou',es:'diecinueve',emoji:'✨'},
+      {ca:'vint',es:'veinte',emoji:'2️⃣0️⃣'},{ca:'trenta',es:'treinta',emoji:'3️⃣0️⃣'},
+      {ca:'quaranta',es:'cuarenta',emoji:'4️⃣0️⃣'},{ca:'cinquanta',es:'cincuenta',emoji:'5️⃣0️⃣'},
+      {ca:'seixanta',es:'sesenta',emoji:'6️⃣0️⃣'},{ca:'setanta',es:'setenta',emoji:'7️⃣0️⃣'},
+      {ca:'vuitanta',es:'ochenta',emoji:'8️⃣0️⃣'},{ca:'noranta',es:'noventa',emoji:'9️⃣0️⃣'},
+      {ca:'cent',es:'cien',emoji:'💯'},
+    ]
+  },
+  { id:'escola-mat', name:'Material escolar', icon:'🎒', color:'#EC4899',
+    words:[
+      {ca:'la motxilla',es:'la mochila',emoji:'🎒'},{ca:'el llapis',es:'el lápiz',emoji:'✏️'},
+      {ca:'el bolígraf',es:'el bolígrafo',emoji:'🖊️'},{ca:'el quadern',es:'el cuaderno',emoji:'📓'},
+      {ca:'el llibre',es:'el libro',emoji:'📚'},{ca:'la goma',es:'la goma',emoji:'🔲'},
+      {ca:'les tisores',es:'las tijeras',emoji:'✂️'},{ca:'la regla',es:'la regla',emoji:'📏'},
+      {ca:'el sacapuntes',es:'el sacapuntas',emoji:'🔪'},{ca:'els colors',es:'los colores',emoji:'🖍️'},
+      {ca:'el pegament',es:'el pegamento',emoji:'🫙'},{ca:'la cartolina',es:'la cartulina',emoji:'🟨'},
+    ]
+  },
+  { id:'classe', name:'La classe', icon:'🏫', color:'#3B82F6',
+    words:[
+      {ca:'la pissarra',es:'la pizarra',emoji:'🟩'},{ca:'la taula',es:'la mesa',emoji:'🪑'},
+      {ca:'la cadira',es:'la silla',emoji:'💺'},{ca:'la porta',es:'la puerta',emoji:'🚪'},
+      {ca:'la finestra',es:'la ventana',emoji:'🪟'},{ca:'la paret',es:'la pared',emoji:'🧱'},
+      {ca:'el sostre',es:'el techo',emoji:'🏠'},{ca:'el terra',es:'el suelo',emoji:'▪️'},
+      {ca:'el mestre / la mestra',es:'el maestro / la maestra',emoji:'👨‍🏫'},
+      {ca:'l\'alumne / l\'alumna',es:'el alumno / la alumna',emoji:'👦'},
+      {ca:'el projector',es:'el proyector',emoji:'📽️'},{ca:'l\'ordinador',es:'el ordenador',emoji:'💻'},
+    ]
+  },
+  { id:'cos', name:'El cos humà', icon:'🧍', color:'#EF4444',
+    words:[
+      {ca:'el cap',es:'la cabeza',emoji:'👤'},{ca:'els ulls',es:'los ojos',emoji:'👀'},
+      {ca:'el nas',es:'la nariz',emoji:'👃'},{ca:'la boca',es:'la boca',emoji:'👄'},
+      {ca:'les orelles',es:'las orejas',emoji:'👂'},{ca:'el coll',es:'el cuello',emoji:'🧣'},
+      {ca:'el braç',es:'el brazo',emoji:'💪'},{ca:'la mà',es:'la mano',emoji:'✋'},
+      {ca:'els dits',es:'los dedos',emoji:'☝️'},{ca:'la cama',es:'la pierna',emoji:'🦵'},
+      {ca:'el peu',es:'el pie',emoji:'🦶'},{ca:'l\'esquena',es:'la espalda',emoji:'🔙'},
+      {ca:'la panxa',es:'la barriga',emoji:'🫃'},{ca:'el pit',es:'el pecho',emoji:'❤️'},
+    ]
+  },
+  { id:'vestits', name:'La roba', icon:'👗', color:'#A855F7',
+    words:[
+      {ca:'la samarreta',es:'la camiseta',emoji:'👕'},{ca:'els pantalons',es:'los pantalones',emoji:'👖'},
+      {ca:'el vestit',es:'el vestido',emoji:'👗'},{ca:'la faldilla',es:'la falda',emoji:'🩱'},
+      {ca:'la jaqueta',es:'la chaqueta',emoji:'🧥'},{ca:'l\'abric',es:'el abrigo',emoji:'🧥'},
+      {ca:'les sabates',es:'los zapatos',emoji:'👞'},{ca:'les sabatilles',es:'las zapatillas',emoji:'👟'},
+      {ca:'els mitjons',es:'los calcetines',emoji:'🧦'},{ca:'el jersei',es:'el jersey',emoji:'🧶'},
+      {ca:'el barret',es:'el sombrero',emoji:'🎩'},{ca:'la bufanda',es:'la bufanda',emoji:'🧣'},
+      {ca:'els guants',es:'los guantes',emoji:'🧤'},{ca:'la gorreta',es:'la gorra',emoji:'🧢'},
+    ]
+  },
+  { id:'familia', name:'La família', icon:'👨‍👩‍👧‍👦', color:'#F97316',
+    words:[
+      {ca:'el pare',es:'el padre',emoji:'👨'},{ca:'la mare',es:'la madre',emoji:'👩'},
+      {ca:'el germà',es:'el hermano',emoji:'👦'},{ca:'la germana',es:'la hermana',emoji:'👧'},
+      {ca:'l\'avi',es:'el abuelo',emoji:'👴'},{ca:'l\'àvia',es:'la abuela',emoji:'👵'},
+      {ca:'l\'oncle',es:'el tío',emoji:'🧔'},{ca:'la tia',es:'la tía',emoji:'👩'},
+      {ca:'el cosí',es:'el primo',emoji:'👦'},{ca:'la cosina',es:'la prima',emoji:'👧'},
+      {ca:'el fill',es:'el hijo',emoji:'👶'},{ca:'la filla',es:'la hija',emoji:'👶'},
+      {ca:'el marit',es:'el marido',emoji:'💍'},{ca:'la dona',es:'la esposa',emoji:'💍'},
+    ]
+  },
+  { id:'casa', name:'La casa', icon:'🏠', color:'#059669',
+    words:[
+      {ca:'la cuina',es:'la cocina',emoji:'🍳'},{ca:'el menjador',es:'el comedor',emoji:'🍽️'},
+      {ca:'el saló',es:'el salón',emoji:'🛋️'},{ca:'la habitació',es:'la habitación',emoji:'🛏️'},
+      {ca:'el bany',es:'el baño',emoji:'🚿'},{ca:'el rebedor',es:'el recibidor',emoji:'🚪'},
+      {ca:'el jardí',es:'el jardín',emoji:'🌿'},{ca:'el terrat',es:'la terraza',emoji:'🌇'},
+      {ca:'el sofà',es:'el sofá',emoji:'🛋️'},{ca:'el llit',es:'la cama',emoji:'🛏️'},
+      {ca:'la taula',es:'la mesa',emoji:'🪑'},{ca:'la nevera',es:'la nevera',emoji:'🧊'},
+      {ca:'la rentadora',es:'la lavadora',emoji:'🌊'},{ca:'la televisió',es:'la televisión',emoji:'📺'},
+    ]
+  },
+  { id:'botigues', name:'Les botigues', icon:'🛒', color:'#D97706',
+    words:[
+      {ca:'la fruiteria',es:'la frutería',emoji:'🍎'},{ca:'la carnisseria',es:'la carnicería',emoji:'🥩'},
+      {ca:'la fleca',es:'la panadería',emoji:'🍞'},{ca:'la farmàcia',es:'la farmacia',emoji:'💊'},
+      {ca:'la papereria',es:'la papelería',emoji:'📄'},{ca:'la llibreria',es:'la librería',emoji:'📚'},
+      {ca:'el supermercat',es:'el supermercado',emoji:'🛒'},{ca:'la perruqueria',es:'la peluquería',emoji:'💇'},
+      {ca:'la sabateria',es:'la zapatería',emoji:'👟'},{ca:'la joieria',es:'la joyería',emoji:'💍'},
+      {ca:'el mercat',es:'el mercado',emoji:'🏪'},{ca:'el quiosc',es:'el quiosco',emoji:'📰'},
+    ]
+  },
+  { id:'menjar', name:'El menjar', icon:'🍽️', color:'#EF4444',
+    words:[
+      {ca:'el pa',es:'el pan',emoji:'🍞'},{ca:'la llet',es:'la leche',emoji:'🥛'},
+      {ca:'l\'ou',es:'el huevo',emoji:'🥚'},{ca:'el formatge',es:'el queso',emoji:'🧀'},
+      {ca:'el pernil',es:'el jamón',emoji:'🍖'},{ca:'el pollastre',es:'el pollo',emoji:'🍗'},
+      {ca:'el peix',es:'el pescado',emoji:'🐟'},{ca:'l\'arròs',es:'el arroz',emoji:'🍚'},
+      {ca:'la pasta',es:'la pasta',emoji:'🍝'},{ca:'la fruita',es:'la fruta',emoji:'🍎'},
+      {ca:'les verdures',es:'las verduras',emoji:'🥦'},{ca:'el sucre',es:'el azúcar',emoji:'🍬'},
+      {ca:'la sal',es:'la sal',emoji:'🧂'},{ca:'l\'oli',es:'el aceite',emoji:'🫙'},
+      {ca:'l\'aigua',es:'el agua',emoji:'💧'},{ca:'el suc',es:'el zumo',emoji:'🍊'},
+    ]
+  },
+  { id:'animals', name:'Els animals', icon:'🐾', color:'#92400E',
+    words:[
+      {ca:'el gat / la gata',es:'el gato / la gata',emoji:'🐱'},
+      {ca:'el gos / la gossa',es:'el perro / la perra',emoji:'🐶'},
+      {ca:'el cavall',es:'el caballo',emoji:'🐴'},{ca:'la vaca',es:'la vaca',emoji:'🐄'},
+      {ca:'l\'ovella',es:'la oveja',emoji:'🐑'},{ca:'el porc',es:'el cerdo',emoji:'🐷'},
+      {ca:'el lleó / la lleona',es:'el león / la leona',emoji:'🦁'},
+      {ca:'l\'elefant',es:'el elefante',emoji:'🐘'},{ca:'el tigre',es:'el tigre',emoji:'🐯'},
+      {ca:'el mico',es:'el mono',emoji:'🐒'},{ca:'la serp',es:'la serpiente',emoji:'🐍'},
+      {ca:'l\'ocell',es:'el pájaro',emoji:'🐦'},{ca:'el peix',es:'el pez',emoji:'🐠'},
+      {ca:'el conill',es:'el conejo',emoji:'🐰'},{ca:'la tortuga',es:'la tortuga',emoji:'🐢'},
+    ]
+  },
+  { id:'oficis', name:'Els oficis', icon:'👷', color:'#1D4ED8',
+    words:[
+      {ca:'el/la metge/metgessa',es:'el médico / la médica',emoji:'👨‍⚕️'},
+      {ca:'el/la mestre/mestra',es:'el maestro / la maestra',emoji:'👨‍🏫'},
+      {ca:'el/la policia',es:'el/la policía',emoji:'👮'},
+      {ca:'el/la bomber/bombera',es:'el bombero / la bombera',emoji:'🧑‍🚒'},
+      {ca:'el/la cuiner/cuinera',es:'el cocinero / la cocinera',emoji:'👨‍🍳'},
+      {ca:'el/la pilot',es:'el/la piloto',emoji:'🧑‍✈️'},
+      {ca:'el/la conductor/conductora',es:'el conductor / la conductora',emoji:'🧑‍✈️'},
+      {ca:'el/la dependent/dependenta',es:'el dependiente / la dependienta',emoji:'🛒'},
+      {ca:'el/la pagès/pagesa',es:'el granjero / la granjera',emoji:'🧑‍🌾'},
+      {ca:'el/la músic/música',es:'el músico / la música',emoji:'🎵'},
+      {ca:'el/la futbolista',es:'el/la futbolista',emoji:'⚽'},
+      {ca:'el/la pintor/pintora',es:'el pintor / la pintora',emoji:'🎨'},
+    ]
+  },
+  { id:'ciutat', name:'La ciutat', icon:'🏙️', color:'#475569',
+    words:[
+      {ca:'el carrer',es:'la calle',emoji:'🛣️'},{ca:'la plaça',es:'la plaza',emoji:'⛲'},
+      {ca:'el parc',es:'el parque',emoji:'🌳'},{ca:'l\'hospital',es:'el hospital',emoji:'🏥'},
+      {ca:'l\'escola',es:'el colegio',emoji:'🏫'},{ca:'la biblioteca',es:'la biblioteca',emoji:'📚'},
+      {ca:'l\'estació',es:'la estación',emoji:'🚉'},{ca:'l\'aeroport',es:'el aeropuerto',emoji:'✈️'},
+      {ca:'el cinema',es:'el cine',emoji:'🎬'},{ca:'el restaurant',es:'el restaurante',emoji:'🍽️'},
+      {ca:'el banc',es:'el banco',emoji:'🏦'},{ca:'la comissaria',es:'la comisaría',emoji:'🚔'},
+      {ca:'l\'ajuntament',es:'el ayuntamiento',emoji:'🏛️'},{ca:'el museu',es:'el museo',emoji:'🏛️'},
+    ]
+  },
+  { id:'escola', name:'L\'escola', icon:'🏫', color:'#0EA5E9',
+    words:[
+      {ca:'la biblioteca',es:'la biblioteca',emoji:'📚'},{ca:'el gimnàs',es:'el gimnasio',emoji:'🏃'},
+      {ca:'el menjador',es:'el comedor',emoji:'🍽️'},{ca:'el pati',es:'el patio',emoji:'⛹️'},
+      {ca:'la secretaria',es:'la secretaría',emoji:'📋'},{ca:'la direcció',es:'la dirección',emoji:'👔'},
+      {ca:'el lavabo',es:'el baño',emoji:'🚻'},{ca:'la sala de professors',es:'la sala de profesores',emoji:'👨‍🏫'},
+      {ca:'l\'entrada',es:'la entrada',emoji:'🚪'},{ca:'el passadís',es:'el pasillo',emoji:'🚶'},
+      {ca:'el pàrquing',es:'el aparcamiento',emoji:'🅿️'},{ca:'la cantina',es:'la cantina',emoji:'🥤'},
+    ]
+  },
+  { id:'vehicles', name:'Els vehicles', icon:'🚗', color:'#DC2626',
+    words:[
+      {ca:'el cotxe',es:'el coche',emoji:'🚗'},{ca:'la moto',es:'la moto',emoji:'🏍️'},
+      {ca:'el camió',es:'el camión',emoji:'🚚'},{ca:'l\'autobús',es:'el autobús',emoji:'🚌'},
+      {ca:'el metro',es:'el metro',emoji:'🚇'},{ca:'el tren',es:'el tren',emoji:'🚂'},
+      {ca:'l\'avió',es:'el avión',emoji:'✈️'},{ca:'el vaixell',es:'el barco',emoji:'🚢'},
+      {ca:'la bicicleta',es:'la bicicleta',emoji:'🚲'},{ca:'el patinet',es:'el patinete',emoji:'🛴'},
+      {ca:'el taxi',es:'el taxi',emoji:'🚕'},{ca:'l\'helicòpter',es:'el helicóptero',emoji:'🚁'},
+      {ca:'l\'ambulància',es:'la ambulancia',emoji:'🚑'},{ca:'el camió de bombers',es:'el camión de bomberos',emoji:'🚒'},
+    ]
+  },
+    words:[
+      {ca:'el cotxe',es:'el coche',emoji:'🚗'},{ca:'la moto',es:'la moto',emoji:'🏍️'},
+      {ca:'el camió',es:'el camión',emoji:'🚚'},{ca:'l\'autobús',es:'el autobús',emoji:'🚌'},
+      {ca:'el metro',es:'el metro',emoji:'🚇'},{ca:'el tren',es:'el tren',emoji:'🚂'},
+      {ca:'l\'avió',es:'el avión',emoji:'✈️'},{ca:'el vaixell',es:'el barco',emoji:'🚢'},
+      {ca:'la bicicleta',es:'la bicicleta',emoji:'🚲'},{ca:'el patinet',es:'el patinete',emoji:'🛴'},
+      {ca:'el taxi',es:'el taxi',emoji:'🚕'},{ca:'l\'helicòpter',es:'el helicóptero',emoji:'🚁'},
+      {ca:'l\'ambulància',es:'la ambulancia',emoji:'🚑'},{ca:'el camió de bombers',es:'el camión de bomberos',emoji:'🚒'},
+    ]
+  },
+];
+
+/* ── Vocab State ── */
+let VS = {
+  topicId: null,
+  mode: 'flashcard',
+  words: [],
+  fcIdx: 0,
+  fcRevealed: false,
+  quizIdx: 0,
+  quizScore: 0,
+  quizAnswered: false,
+  matchItems: [],
+  matchSel: null,
+  matchDone: [],
+  writeIdx: 0,
+  writeAnswered: false,
+  listenIdx: 0,
+  listenScore: 0,
+  listenAnswered: false,
+  listenWords: [],
+  wsGrid: [],
+  wsPool: [],
+  wsFound: new Set(),
+  wsWordCells: {},
+  wsSelecting: false,
+  wsStartCell: null,
+  wsCurrentCells: [],
+};
+
+function initVocabScreen() {
+  const grid = document.getElementById('vocab-topics-grid');
+  grid.innerHTML = '';
+  VOCAB_TOPICS.forEach(t => {
+    const done = getVocabDone(t.id);
+    const btn = document.createElement('button');
+    btn.className = 'vt-btn' + (VS.topicId === t.id ? ' active-topic' : '');
+    btn.innerHTML = `
+      ${done ? '<div class="vt-done-badge">✓</div>' : ''}
+      <span class="vt-icon">${t.icon}</span>
+      <span class="vt-name">${t.name}</span>
+      <span class="vt-count">${t.words.length} paraules</span>
+    `;
+    btn.onclick = () => openVocabTopic(t.id);
+    grid.appendChild(btn);
+  });
+}
+
+function getVocabDone(topicId) {
+  if (!ST.progress) return false;
+  return ST.progress['vocab_' + topicId] > 0;
+}
+
+function openVocabTopic(topicId) {
+  VS.topicId = topicId;
+  VS.mode = 'flashcard';
+  const topic = VOCAB_TOPICS.find(t => t.id === topicId);
+  VS.words = [...topic.words];
+
+  // Update topic grid highlight
+  document.querySelectorAll('.vt-btn').forEach((b,i) => {
+    b.classList.toggle('active-topic', VOCAB_TOPICS[i].id === topicId);
+  });
+
+  document.getElementById('vp-title').innerHTML = `${topic.icon} ${topic.name}`;
+  document.getElementById('vocab-panel').style.display = 'block';
+  document.getElementById('vocab-panel').scrollIntoView({ behavior:'smooth', block:'nearest' });
+
+  // Update mode tabs
+  document.querySelectorAll('.vmode-tab').forEach((t,i) => t.classList.toggle('active', i===0));
+  renderVocabMode();
+}
+
+function setVocabMode(mode) {
+  VS.mode = mode;
+  const modeMap = { flashcard:'targ', quiz:'quiz', match:'relac', listen:'escol', write:'escriu', wordsearch:'sopa' };
+  document.querySelectorAll('.vmode-tab').forEach(t => {
+    const key = modeMap[mode] || mode;
+    t.classList.toggle('active', t.textContent.toLowerCase().includes(key));
+  });
+  renderVocabMode();
+}
+
+function renderVocabMode() {
+  const area = document.getElementById('vocab-mode-area');
+  if (VS.mode === 'flashcard') renderFlashcard(area);
+  else if (VS.mode === 'quiz') renderQuiz(area);
+  else if (VS.mode === 'match') renderMatch(area);
+  else if (VS.mode === 'listen') renderListen(area);
+  else if (VS.mode === 'write') renderWrite(area);
+  else if (VS.mode === 'wordsearch') renderWordSearch(area);
+}
+
+/* ═══ FLASHCARD ═══ */
+function renderFlashcard(area) {
+  VS.fcIdx = 0; VS.fcRevealed = false;
+  const w = VS.words[VS.fcIdx];
+  area.innerHTML = `
+    <div class="flashcard-area">
+      <div class="flashcard" id="fc-card" onclick="revealFC()">
+        <span class="fc-emoji">${w.emoji}</span>
+        <span class="fc-word" id="fc-word">${w.ca}</span>
+        <span class="fc-translation" id="fc-trans"></span>
+        <span class="fc-hint">👆 Clica per veure la traducció</span>
+      </div>
+      <div class="flashcard-nav">
+        <button class="fc-nav-btn" onclick="fcPrev()">← Anterior</button>
+        <span class="fc-counter" id="fc-counter">1 / ${VS.words.length}</span>
+        <button class="fc-nav-btn" onclick="fcNext()">Següent →</button>
+      </div>
+      <button class="fc-speak-btn" onclick="speakWord(VS.words[VS.fcIdx].ca)">🔊 Escolta</button>
+    </div>`;
+}
+
+function revealFC() {
+  VS.fcRevealed = !VS.fcRevealed;
+  const w = VS.words[VS.fcIdx];
+  const trans = document.getElementById('fc-trans');
+  if (trans) {
+    trans.textContent = VS.fcRevealed ? (w.es || '') : '';
+    trans.className = 'fc-translation' + (VS.fcRevealed ? ' revealed' : '');
+  }
+}
+
+function fcNext() {
+  VS.fcIdx = (VS.fcIdx + 1) % VS.words.length;
+  VS.fcRevealed = false;
+  updateFC();
+}
+function fcPrev() {
+  VS.fcIdx = (VS.fcIdx - 1 + VS.words.length) % VS.words.length;
+  VS.fcRevealed = false;
+  updateFC();
+}
+function updateFC() {
+  const w = VS.words[VS.fcIdx];
+  const card = document.getElementById('fc-card');
+  if (!card) return;
+  card.querySelector('.fc-emoji').textContent = w.emoji;
+  card.querySelector('.fc-word').textContent = w.ca;
+  const trans = card.querySelector('.fc-translation');
+  trans.textContent = '';
+  trans.className = 'fc-translation';
+  card.querySelector('.fc-hint').textContent = '👆 Clica per veure la traducció';
+  document.getElementById('fc-counter').textContent = `${VS.fcIdx+1} / ${VS.words.length}`;
+}
+
+/* ═══ QUIZ ═══ */
+function renderQuiz(area) {
+  VS.quizIdx = 0; VS.quizScore = 0; VS.quizAnswered = false;
+  const shuffled = [...VS.words].sort(() => Math.random()-.5);
+  VS.quizWords = shuffled;
+  area.innerHTML = `
+    <div class="quiz-area">
+      <div class="quiz-progress">
+        <div class="quiz-prog-track"><div class="quiz-prog-fill" id="qpf" style="width:0%"></div></div>
+        <span class="quiz-score" id="q-score">0 / ${VS.quizWords.length}</span>
+      </div>
+      <div id="quiz-q-area"></div>
+      <div class="vocab-result" id="quiz-result">
+        <div class="vr-score" id="qr-score">—</div>
+        <div class="vr-msg" id="qr-msg">—</div>
+        <button class="fc-nav-btn" onclick="renderQuiz(document.getElementById('vocab-mode-area'))">Torna-ho a intentar 🔄</button>
+      </div>
+    </div>`;
+  renderQuizQ();
+}
+
+function renderQuizQ() {
+  if (VS.quizIdx >= VS.quizWords.length) {
+    document.getElementById('quiz-result').classList.add('show');
+    document.getElementById('quiz-q-area').style.display = 'none';
+    document.getElementById('qr-score').textContent = `${VS.quizScore} / ${VS.quizWords.length} ⭐`;
+    const pct = VS.quizScore / VS.quizWords.length;
+    document.getElementById('qr-msg').textContent = pct===1 ? '🏆 Perfect! Saps totes les paraules!' : pct>=.7 ? '😄 Molt bé! Gairebé perfecte!' : '💪 Continua practicant!';
+    // Save progress
+    if (ST.progress) { ST.progress['vocab_' + VS.topicId] = VS.quizScore; saveProgress(); initVocabScreen(); }
+    return;
+  }
+  VS.quizAnswered = false;
+  const correct = VS.quizWords[VS.quizIdx];
+  // Build 3 wrong options from other words
+  const others = VS.words.filter(w => w.ca !== correct.ca).sort(() => Math.random()-.5).slice(0,3);
+  const opts = [...others, correct].sort(() => Math.random()-.5);
+
+  document.getElementById('qpf').style.width = (VS.quizIdx/VS.quizWords.length*100) + '%';
+  document.getElementById('q-score').textContent = `${VS.quizScore} / ${VS.quizWords.length}`;
+
+  const area = document.getElementById('quiz-q-area');
+  area.innerHTML = `
+    <div class="quiz-q"><span class="qemoji">${correct.emoji}</span> Com es diu en català?<br><small style="font-size:.85rem;color:var(--gris);font-weight:700">(en castellà: ${correct.es})</small></div>
+    <div class="quiz-opts">
+      ${opts.map((o,i) => `<button class="quiz-opt" onclick="pickQuizOpt(this,'${o.ca}','${correct.ca}')">${o.ca}</button>`).join('')}
+    </div>
+    <div class="quiz-fb" id="qfb"></div>
+    <div id="quiz-next-wrap"></div>
+  `;
+}
+
+function pickQuizOpt(btn, chosen, correct) {
+  if (VS.quizAnswered) return;
+  VS.quizAnswered = true;
+  const isOk = chosen === correct;
+  if (isOk) VS.quizScore++;
+
+  document.querySelectorAll('.quiz-opt').forEach(b => {
+    b.disabled = true;
+    const bc = b.textContent.trim();
+    if (bc === correct) b.classList.add('q-correct');
+    else if (bc === chosen && !isOk) b.classList.add('q-wrong');
+  });
+
+  const fb = document.getElementById('qfb');
+  fb.className = 'quiz-fb show ' + (isOk ? 'ok' : 'ko');
+  fb.innerHTML = isOk ? '🎉 Molt bé!' : `💡 La resposta correcta era: <strong>${correct}</strong>`;
+
+  speakWord(correct);
+
+  document.getElementById('quiz-next-wrap').innerHTML =
+    `<button class="btn-write-check" style="width:100%;margin-top:8px" onclick="VS.quizIdx++;renderQuizQ()">Següent →</button>`;
+}
+
+/* ═══ MATCH ═══ */
+function renderMatch(area) {
+  // Pick 6 words max for matching
+  const pool = [...VS.words].sort(() => Math.random()-.5).slice(0, Math.min(6, VS.words.length));
+  VS.matchPool = pool;
+  VS.matchSel = null;
+  VS.matchDone = [];
+
+  // Build left (emoji+ca) and right (es) columns shuffled
+  const leftItems = pool.map((w,i) => ({ id:'L'+i, text: w.emoji + ' ' + w.ca, pairIdx: i }));
+  const rightItems = pool.map((w,i) => ({ id:'R'+i, text: w.es, pairIdx: i })).sort(() => Math.random()-.5);
+
+  VS.matchLeft = leftItems;
+  VS.matchRight = rightItems;
+
+  area.innerHTML = `
+    <div class="match-voc-area">
+      <p style="font-weight:800;color:var(--gris);font-size:.82rem;margin-bottom:14px">Clica una paraula en català i després la seva traducció en castellà</p>
+      <div class="match-voc-grid">
+        <div id="mv-left">${leftItems.map(it => `<div class="mv-item" id="${it.id}" data-pair="${it.pairIdx}" data-side="L" onclick="pickMV(this)">${it.text}</div>`).join('')}</div>
+        <div id="mv-right">${rightItems.map(it => `<div class="mv-item" id="${it.id}" data-pair="${it.pairIdx}" data-side="R" onclick="pickMV(this)">${it.text}</div>`).join('')}</div>
+      </div>
+      <div class="match-voc-feedback" id="mvfb"></div>
+      <div id="mv-done" style="display:none;text-align:center;padding:16px">
+        <div style="font-size:2rem">🎉</div>
+        <div style="font-family:'Fredoka One',cursive;font-size:1.2rem;margin:8px 0">Perfecte! Has relacionat totes les paraules!</div>
+        <button class="fc-nav-btn" onclick="renderMatch(document.getElementById('vocab-mode-area'))">Nou grup 🔄</button>
+      </div>
+    </div>`;
+}
+
+function pickMV(el) {
+  if (el.classList.contains('mv-match')) return;
+  const side = el.dataset.side;
+  const pair = parseInt(el.dataset.pair);
+
+  if (!VS.matchSel) {
+    if (side !== 'L') return; // Must pick left first
+    VS.matchSel = { el, pair };
+    el.classList.add('mv-sel');
+  } else {
+    if (side === 'L') {
+      VS.matchSel.el.classList.remove('mv-sel');
+      VS.matchSel = { el, pair };
+      el.classList.add('mv-sel');
+      return;
+    }
+    // Right picked — check
+    const isMatch = VS.matchSel.pair === pair;
+    if (isMatch) {
+      VS.matchSel.el.classList.remove('mv-sel');
+      VS.matchSel.el.classList.add('mv-match');
+      el.classList.add('mv-match');
+      VS.matchDone.push(pair);
+      speakWord(VS.matchPool[pair].ca);
+      document.getElementById('mvfb').textContent = '✅ Correcte!';
+      setTimeout(() => { if(document.getElementById('mvfb')) document.getElementById('mvfb').textContent=''; }, 1000);
+      VS.matchSel = null;
+      if (VS.matchDone.length === VS.matchPool.length) {
+        setTimeout(() => {
+          const grid = document.querySelector('.match-voc-grid');
+          if(grid) grid.style.display = 'none';
+          const done = document.getElementById('mv-done');
+          if(done) done.style.display = 'block';
+        }, 500);
+      }
+    } else {
+      el.classList.add('mv-bad');
+      setTimeout(() => el.classList.remove('mv-bad'), 400);
+      VS.matchSel.el.classList.add('mv-bad');
+      setTimeout(() => { if(VS.matchSel) VS.matchSel.el.classList.remove('mv-bad','mv-sel'); VS.matchSel = null; }, 400);
+      document.getElementById('mvfb').textContent = '❌ Prova una altra vegada!';
+      setTimeout(() => { if(document.getElementById('mvfb')) document.getElementById('mvfb').textContent=''; }, 1000);
+    }
+  }
+}
+
+/* ═══ WRITE ═══ */
+function renderWrite(area) {
+  VS.writeIdx = 0; VS.writeAnswered = false;
+  const shuffled = [...VS.words].sort(() => Math.random()-.5);
+  VS.writeWords = shuffled;
+  renderWriteQ(area);
+}
+
+function renderWriteQ(area) {
+  if (!area) area = document.getElementById('vocab-mode-area');
+  if (VS.writeIdx >= VS.writeWords.length) {
+    area.innerHTML = `<div class="write-area" style="text-align:center;padding:40px">
+      <div style="font-size:3rem">🏆</div>
+      <div class="vr-score" style="font-family:'Fredoka One',cursive;font-size:2rem;color:var(--verd)">${VS.writeScore} / ${VS.writeWords.length}</div>
+      <div class="vr-msg" style="color:var(--gris);margin:8px 0 20px">Has practicat totes les paraules!</div>
+      <button class="fc-nav-btn" onclick="renderWrite(document.getElementById('vocab-mode-area'))">Torna-ho a intentar 🔄</button>
+    </div>`;
+    return;
+  }
+  VS.writeAnswered = false;
+  VS.writeScore = VS.writeScore || 0;
+  const w = VS.writeWords[VS.writeIdx];
+  area.innerHTML = `
+    <div class="write-area">
+      <div class="write-q">
+        <span class="write-emoji">${w.emoji}</span>
+        <div>
+          <div class="write-q-text">Escriu en català:</div>
+          <div style="font-size:1rem;color:var(--gris);font-weight:700">en castellà: <strong>${w.es}</strong></div>
+        </div>
+      </div>
+      <div class="write-input-wrap">
+        <input class="write-inp" id="write-inp" placeholder="Escriu aquí..." autocomplete="off" spellcheck="false"
+          onkeydown="if(event.key==='Enter')checkWrite()">
+        <button class="btn-write-check" onclick="checkWrite()">✓</button>
+      </div>
+      <div class="write-fb" id="write-fb"></div>
+      <div class="write-nav">
+        <span class="write-count">${VS.writeIdx+1} / ${VS.writeWords.length}</span>
+        <button class="fc-speak-btn" onclick="speakWord('${w.ca.replace(/'/g,"\\'")}')">🔊</button>
+      </div>
+    </div>`;
+  document.getElementById('write-inp').focus();
+}
+
+function checkWrite() {
+  if (VS.writeAnswered) return;
+  const w = VS.writeWords[VS.writeIdx];
+  const inp = document.getElementById('write-inp');
+  const val = inp.value.trim().toLowerCase();
+
+  // Accept main word (first part if slash) and normalize accents loosely
+  const normalize = s => s.toLowerCase()
+    .replace(/à/g,'a').replace(/è|é/g,'e').replace(/í|ï/g,'i')
+    .replace(/ò|ó/g,'o').replace(/ú|ü/g,'u').replace(/ç/g,'c')
+    .replace(/·/g,'').trim();
+
+  const targets = w.ca.split('/').map(s => s.trim().toLowerCase());
+  const valNorm = normalize(val);
+  const isOk = targets.some(t => t === val || normalize(t) === valNorm);
+
+  VS.writeAnswered = true;
+  inp.classList.add(isOk ? 'ok' : 'ko');
+  inp.disabled = true;
+  if (!isOk) inp.value = w.ca;
+
+  const fb = document.getElementById('write-fb');
+  fb.className = 'write-fb ' + (isOk ? 'ok' : 'ko');
+  fb.textContent = isOk ? `✅ Perfecte! "${w.ca}"` : `❌ La resposta era: ${w.ca}`;
+
+  if (isOk) { VS.writeScore = (VS.writeScore || 0) + 1; speakWord(w.ca); }
+
+  setTimeout(() => {
+    VS.writeIdx++;
+    renderWriteQ();
+  }, isOk ? 1000 : 1800);
+}
+
+/* ═══ LISTEN MODE ═══ */
+function renderListen(area) {
+  VS.listenIdx = 0; VS.listenScore = 0; VS.listenAnswered = false;
+  const shuffled = [...VS.words].sort(() => Math.random()-.5);
+  VS.listenWords = shuffled;
+  area.innerHTML = `
+    <div class="listen-area">
+      <div class="listen-word-display" onclick="speakListen()">
+        <span class="listen-emoji" id="li-emoji">🔊</span>
+        <div class="listen-prompt">Escolta la paraula i tria l'opció correcta</div>
+        <button class="listen-play-btn" onclick="speakListen();event.stopPropagation()">▶ Escoltar de nou</button>
+      </div>
+      <div class="listen-opts" id="li-opts"></div>
+      <div class="quiz-fb" id="li-fb"></div>
+      <div class="quiz-progress">
+        <div class="quiz-prog-track"><div class="quiz-prog-fill" id="li-prog" style="width:0%;background:var(--taronja)"></div></div>
+        <span class="listen-score" id="li-score">0 / ${shuffled.length}</span>
+      </div>
+      <div class="vocab-result" id="listen-result">
+        <div class="vr-score" id="lr-score">—</div>
+        <div class="vr-msg" id="lr-msg">—</div>
+        <button class="fc-nav-btn" onclick="renderListen(document.getElementById('vocab-mode-area'))">Torna-ho a intentar 🔄</button>
+      </div>
+    </div>`;
+  renderListenQ();
+}
+
+function renderListenQ() {
+  if (VS.listenIdx >= VS.listenWords.length) {
+    document.getElementById('listen-result').classList.add('show');
+    document.getElementById('li-opts').style.display = 'none';
+    document.getElementById('li-fb').style.display = 'none';
+    const pct = VS.listenScore / VS.listenWords.length;
+    document.getElementById('lr-score').textContent = `${VS.listenScore} / ${VS.listenWords.length} ⭐`;
+    document.getElementById('lr-msg').textContent = pct===1 ? '🏆 Perfecte! Reconèixes totes les paraules!' : pct>=.7 ? '😄 Molt bé! Continua escoltant!' : '💪 Continua practicant!';
+    if (ST.progress) { ST.progress['vocab_listen_' + VS.topicId] = VS.listenScore; saveProgress(); }
+    return;
+  }
+
+  VS.listenAnswered = false;
+  const correct = VS.listenWords[VS.listenIdx];
+  const others = VS.words.filter(w => w.ca !== correct.ca).sort(() => Math.random()-.5).slice(0, 3);
+  const opts = [...others, correct].sort(() => Math.random()-.5);
+
+  document.getElementById('li-emoji').textContent = '🔊';
+  document.getElementById('li-prog').style.width = (VS.listenIdx / VS.listenWords.length * 100) + '%';
+  document.getElementById('li-score').textContent = `${VS.listenScore} / ${VS.listenWords.length}`;
+  const fb = document.getElementById('li-fb');
+  fb.className = 'quiz-fb'; fb.innerHTML = '';
+
+  const optsEl = document.getElementById('li-opts');
+  optsEl.style.display = 'grid';
+  optsEl.innerHTML = opts.map(o =>
+    `<button class="listen-opt" onclick="pickListenOpt(this,'${o.ca.replace(/'/g,"\\'")}','${correct.ca.replace(/'/g,"\\'")}','${correct.emoji}')">${o.emoji} ${o.ca}</button>`
+  ).join('');
+
+  // Auto-speak after short delay
+  setTimeout(() => speakWord(correct.ca), 400);
+}
+
+function speakListen() {
+  if (VS.listenWords && VS.listenIdx < VS.listenWords.length) {
+    speakWord(VS.listenWords[VS.listenIdx].ca);
+  }
+}
+
+function pickListenOpt(btn, chosen, correct, emoji) {
+  if (VS.listenAnswered) return;
+  VS.listenAnswered = true;
+  const isOk = chosen === correct;
+  if (isOk) VS.listenScore++;
+
+  document.querySelectorAll('.listen-opt').forEach(b => {
+    b.disabled = true;
+    const bc = b.textContent.trim().slice(2).trim(); // remove emoji
+    if (bc === correct || b.textContent.includes(correct)) b.classList.add('ok');
+    else if (b === btn && !isOk) b.classList.add('ko');
+  });
+
+  document.getElementById('li-emoji').textContent = emoji;
+
+  const fb = document.getElementById('li-fb');
+  fb.className = 'quiz-fb show ' + (isOk ? 'ok' : 'ko');
+  fb.innerHTML = isOk ? `🎉 Correcte! <strong>${correct}</strong>` : `💡 Era: <strong>${correct}</strong>`;
+
+  if (isOk) speakWord(correct);
+
+  setTimeout(() => {
+    VS.listenIdx++;
+    renderListenQ();
+  }, isOk ? 1000 : 1800);
+}
+
+/* ═══ WORD SEARCH ═══ */
+const WS_COLS = 12, WS_ROWS = 10;
+
+function renderWordSearch(area) {
+  // Pick up to 8 short words
+  const pool = [...VS.words]
+    .filter(w => {
+      const clean = w.ca.split('/')[0].trim().replace(/[^a-zA-ZàèéíïòóúüçÀÈÉÍÏÒÓÚÜÇ·]/g,'');
+      return clean.length >= 3 && clean.length <= 9;
+    })
+    .sort(() => Math.random()-.5)
+    .slice(0, 7);
+
+  if (pool.length < 3) {
+    area.innerHTML = `<div class="wordsearch-area" style="text-align:center;padding:40px;color:var(--gris)">
+      <div style="font-size:3rem">🔤</div>
+      <p style="font-weight:800;margin-top:8px">Les paraules d'aquest tema són massa llargues per a la sopa de lletres.</p>
+      <p style="font-size:.82rem">Prova un altre mode d'activitat!</p>
+    </div>`;
+    return;
+  }
+
+  const grid = buildWSGrid(pool);
+  VS.wsGrid = grid;
+  VS.wsPool = pool;
+  VS.wsFound = new Set();
+  VS.wsSelecting = false;
+  VS.wsStartCell = null;
+  VS.wsCurrentCells = [];
+
+  const gridHtml = grid.map((row, r) =>
+    row.map((cell, c) =>
+      `<div class="ws-cell" id="wc-${r}-${c}" data-r="${r}" data-c="${c}"
+        onmousedown="wsStart(${r},${c})" onmouseover="wsOver(${r},${c})" onmouseup="wsEnd(${r},${c})"
+        ontouchstart="wsStart(${r},${c});event.preventDefault()" ontouchmove="wsTouchOver(event)" ontouchend="wsEnd()" >${cell}</div>`
+    ).join('')
+  ).join('');
+
+  const wordListHtml = pool.map(w => {
+    const clean = w.ca.split('/')[0].trim().toUpperCase().replace(/[^A-ZÀÈÉÍÏÒÓÚÜÇ·]/g,'');
+    return `<div class="ws-word-item" id="ww-${clean}"><span class="wi-em">${w.emoji}</span> ${w.ca.split('/')[0].trim()}</div>`;
+  }).join('');
+
+  area.innerHTML = `
+    <div class="wordsearch-area">
+      <p class="ws-instructions">🖱️ Clica i arrossega per trobar les paraules amagades!</p>
+      <div class="ws-container">
+        <div class="ws-grid-wrap">
+          <div class="ws-grid" style="grid-template-columns:repeat(${WS_COLS},36px);grid-template-rows:repeat(${WS_ROWS},36px)" id="ws-grid">
+            ${gridHtml}
+          </div>
+        </div>
+        <div class="ws-word-list">
+          <h4>📋 Paraules a trobar:</h4>
+          ${wordListHtml}
+        </div>
+      </div>
+      <div class="ws-complete" id="ws-complete">
+        <div style="font-size:2.5rem">🎉</div>
+        <div style="font-family:'Fredoka One',cursive;font-size:1.4rem;color:var(--verd);margin:8px 0">Has trobat totes les paraules!</div>
+        <button class="fc-nav-btn" onclick="renderWordSearch(document.getElementById('vocab-mode-area'))">Nova sopa 🔄</button>
+      </div>
+    </div>`;
+}
+
+function buildWSGrid(words) {
+  const grid = Array.from({length: WS_ROWS}, () => Array(WS_COLS).fill(''));
+  const dirs = [[0,1],[1,0],[1,1],[-1,1],[0,-1],[-1,0]];
+  VS.wsWordCells = {};
+
+  words.forEach(w => {
+    const word = w.ca.split('/')[0].trim().toUpperCase()
+      .replace(/L·L/gi,'L').replace(/[·]/g,'')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+      .replace(/Ç/g,'C').replace(/[^A-Z]/g,'');
+
+    let placed = false;
+    for (let tries = 0; tries < 100 && !placed; tries++) {
+      const dir = dirs[Math.floor(Math.random() * dirs.length)];
+      const r = Math.floor(Math.random() * WS_ROWS);
+      const c = Math.floor(Math.random() * WS_COLS);
+      const cells = [];
+      let ok = true;
+      for (let i = 0; i < word.length; i++) {
+        const nr = r + dir[0]*i, nc = c + dir[1]*i;
+        if (nr < 0 || nr >= WS_ROWS || nc < 0 || nc >= WS_COLS) { ok=false; break; }
+        if (grid[nr][nc] !== '' && grid[nr][nc] !== word[i]) { ok=false; break; }
+        cells.push([nr, nc]);
+      }
+      if (ok) {
+        cells.forEach(([nr,nc], i) => { grid[nr][nc] = word[i]; });
+        // Store normalized word as key
+        VS.wsWordCells[word] = cells;
+        placed = true;
+      }
+    }
+  });
+
+  // Fill empty cells with random letters
+  const letters = 'ABCDEFGHIJKLMNOPRSTUVXYZ';
+  for (let r = 0; r < WS_ROWS; r++)
+    for (let c = 0; c < WS_COLS; c++)
+      if (!grid[r][c]) grid[r][c] = letters[Math.floor(Math.random() * letters.length)];
+
+  return grid;
+}
+
+function wsStart(r, c) {
+  VS.wsSelecting = true;
+  VS.wsStartCell = [r, c];
+  VS.wsCurrentCells = [[r, c]];
+  wsHighlightCurrent();
+}
+
+function wsOver(r, c) {
+  if (!VS.wsSelecting) return;
+  const [sr, sc] = VS.wsStartCell;
+  const dr = r - sr, dc = c - sc;
+  // Only allow straight lines
+  let cells = [];
+  if (dr === 0) { // horizontal
+    const step = dc >= 0 ? 1 : -1;
+    for (let i = 0; i <= Math.abs(dc); i++) cells.push([sr, sc + step*i]);
+  } else if (dc === 0) { // vertical
+    const step = dr >= 0 ? 1 : -1;
+    for (let i = 0; i <= Math.abs(dr); i++) cells.push([sr + step*i, sc]);
+  } else if (Math.abs(dr) === Math.abs(dc)) { // diagonal
+    const sr2 = dr >= 0 ? 1 : -1, sc2 = dc >= 0 ? 1 : -1;
+    for (let i = 0; i <= Math.abs(dr); i++) cells.push([sr + sr2*i, sc + sc2*i]);
+  } else return;
+  VS.wsCurrentCells = cells;
+  wsHighlightCurrent();
+}
+
+function wsTouchOver(e) {
+  const touch = e.touches[0];
+  const el = document.elementFromPoint(touch.clientX, touch.clientY);
+  if (el && el.dataset.r !== undefined) wsOver(parseInt(el.dataset.r), parseInt(el.dataset.c));
+}
+
+function wsHighlightCurrent() {
+  document.querySelectorAll('.ws-cell:not(.found)').forEach(el => el.classList.remove('selecting'));
+  VS.wsCurrentCells.forEach(([r,c]) => {
+    const el = document.getElementById(`wc-${r}-${c}`);
+    if (el && !el.classList.contains('found')) el.classList.add('selecting');
+  });
+}
+
+function wsEnd() {
+  if (!VS.wsSelecting) return;
+  VS.wsSelecting = false;
+  document.querySelectorAll('.ws-cell.selecting').forEach(el => el.classList.remove('selecting'));
+
+  // Build selected word
+  const selected = VS.wsCurrentCells.map(([r,c]) => VS.wsGrid[r][c]).join('');
+  const selectedRev = [...selected].reverse().join('');
+
+  // Check against all word placements
+  let foundWord = null;
+  for (const [word, cells] of Object.entries(VS.wsWordCells)) {
+    if ((selected === word || selectedRev === word) && !VS.wsFound.has(word)) {
+      foundWord = word;
+      // Mark cells as found
+      cells.forEach(([r,c]) => {
+        const el = document.getElementById(`wc-${r}-${c}`);
+        if (el) { el.classList.add('found'); }
+      });
+      VS.wsFound.add(word);
+      break;
+    }
+  }
+
+  if (foundWord) {
+    speakWord(VS.wsPool.find(w => {
+      const norm = w.ca.split('/')[0].trim().toUpperCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+        .replace(/Ç/g,'C').replace(/L·L/gi,'L').replace(/[·]/g,'').replace(/[^A-Z]/g,'');
+      return norm === foundWord;
+    })?.ca || foundWord);
+
+    // Mark word in list as found
+    const listItem = document.getElementById(`ww-${foundWord}`);
+    if (listItem) listItem.classList.add('found-word');
+
+    if (VS.wsFound.size === Object.keys(VS.wsWordCells).length) {
+      setTimeout(() => {
+        const comp = document.getElementById('ws-complete');
+        if (comp) comp.classList.add('show');
+        if (ST.progress) { ST.progress['vocab_ws_' + VS.topicId] = 1; saveProgress(); }
+      }, 300);
+    }
+  }
+  VS.wsCurrentCells = [];
+}
+  if ('speechSynthesis' in window) {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text.split('/')[0].trim());
+    u.lang = 'ca-ES'; u.rate = 0.85;
+    speechSynthesis.speak(u);
+  }
+}
+
+/* ════════════════════════════════════════
+   BOOT
+════════════════════════════════════════ */
+// Global mouseup to end word search drag
+document.addEventListener('mouseup', () => { if (VS.wsSelecting) wsEnd(); });
+
+// Extend goTo to initialise vocab when navigating to that screen
+const _baseGoTo = goTo;
+function goTo(id) {
+  _baseGoTo(id);
+  if (id === 'screen-vocab' && ST.student) initVocabScreen();
+}
+init();
+</script>
+</body>
+</html>
