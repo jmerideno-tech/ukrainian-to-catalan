@@ -1,0 +1,1 @@
+version: '3.8'\n\nservices:\n  db:\n    image: postgres:latest\n    environment:\n      POSTGRES_DB: your_database_name\n      POSTGRES_USER: your_username\n      POSTGRES_PASSWORD: your_password\n    ports:\n      - '5432:5432'\n    volumes:\n      - postgres_data:/var/lib/postgresql/data\n\nvolumes:\n  postgres_data:
