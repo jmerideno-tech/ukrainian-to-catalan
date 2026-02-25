@@ -1,0 +1,51 @@
+// This is the Prisma schema file for the Ukrainian to Catalan project.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  username    String    @unique
+  email       String    @unique
+  password    String
+  lessons     Lesson[]
+  progress     UserProgress[]
+}
+
+model Lesson {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String?
+  exercises    Exercise[]
+}
+
+model Exercise {
+  id          Int       @id @default(autoincrement())
+  question    String
+  answer      String
+  lesson      Lesson     @relation(fields: [lessonId], references: [id])
+  lessonId    Int
+}
+
+model UserProgress {
+  id          Int       @id @default(autoincrement())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int
+  lesson      Lesson    @relation(fields: [lessonId], references: [id])
+  lessonId    Int
+  completed    Boolean   @default(false)
+}
+
+model Vocabulary {
+  id          Int       @id @default(autoincrement())
+  word        String
+  meaning     String
+  lesson      Lesson @relation(fields: [lessonId], references: [id])
+  lessonId    Int
+}
